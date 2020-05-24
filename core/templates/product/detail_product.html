@@ -1,0 +1,105 @@
+{% extends 'base.html' %} {% block title %}{{ title }}{% endblock %} {% block content %}
+<div class="row content-product">
+  <div class="col-sm-4">
+    <img
+      src="{{ url_for('static', filename='assets/products/' + product.product_image) }}"
+      alt="{{ product.product_name }}"
+      class="product-img"
+    />
+  </div>
+  <div class="col-sm-8">
+    <div class="row">
+      <div class="col-sm-8">
+        <h5>{{ product.product_name }}</h5>
+        <h5 class="price" style="text-decoration: line-through">
+          <span>Old price: </span><span>{{ product.product_price}}</span>
+        </h5>
+        <h5 class="price">
+          <span>Discounted price: </span
+          ><span>{{ product.discounted_price }}</span>
+        </h5>
+        <h5>
+          <span>Sale off: </span
+          ><span>{{ product.discounted_price/product.product_price*100 }}</span
+          >%
+        </h5>
+        <h5>
+          <span>Quantity:</span><span>{{ product.quantity }}</span>
+        </h5>
+        <h5>
+          <span>Product rating: </span><span>{{ product.product_rating }}</span>
+        </h5>
+        <h5>
+          <span>Product review: </span><span>{{ product.product_review }}</span>
+        </h5>
+      </div>
+      <div class="col-sm-4">
+        <h5>Product description</h5>
+        <br />
+        <h5>{{ product.product_description }}</h5>
+      </div>
+    </div>
+  </div>
+</div>
+{% if current_user.is_superuser %}
+<div>
+  <a
+    href="{{ url_for('products.update_product', product_id=product.product_id) }}"
+    class="btn btn-secondary btn-sm m-1"
+    >Update</a
+  >
+  <button
+    type="button"
+    class="btn btn-danger btn-sm m-1"
+    data-toggle="modal"
+    data-target="#deleteModal"
+  >
+    Delete
+  </button>
+</div>
+{% endif %}
+<!--Modal-->
+<div
+  class="modal fade"
+  id="deleteModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="deleteModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Delete this product</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Close
+        </button>
+        <form
+          action="{{ url_for('products.delete_product', product_id=product.product_id) }}"
+          method="POST"
+        >
+          <input
+            type="submit"
+            name="Delete"
+            class="btn btn-danger"
+            value="Delete"
+          />
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import category_product %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+  <div class="content-detail-category">
+    <div class="row">
+      <div class="item">
+        <input type="hidden">
+        {% for product in category.products %}
+           <a href="{{ url_for('products.detail_product', product_id=product.product_id) }}">
+            <img src="{{ url_for('static', filename='product_images/' + product.product_image) }}" alt="{{ product.product_name }}" class="c-product-img">
+            <h5>{{ product.product_name }}</h5>
+          </a>
+          <h5>{{ product.product_price }}</h5>
+          <h5>{{ product.discounted_price }}</h5>
+          <h5>{{ product.product_rating }}</h5>
+        {% endfor %}
+        </div>
+    </div>
+  </div>
+{% endblock %}

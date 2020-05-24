@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import render_field, render_button %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="content">
+  <form action="" class="needs-validation" method="POST" novalidate>
+    {{ form.hidden_tag() }}
+    <fieldset class="form-group">
+      <legend class="border-auto mb-4">Reset password</legend>
+      {{ render_field(form.password) }}
+      {{ render_field(form.confirm_password) }}
+    </fieldset>
+    {{ render_button(form.submit) }}
+  </form>
+</div>
+{% endblock %}

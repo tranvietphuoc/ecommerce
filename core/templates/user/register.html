@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import render_field, render_button %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="content-form col-sm-8">
+  <form action="{{ url_for('users.register') }}" class="needs-validation" method="POST" novalidate>
+    {{ form.hidden_tag() }}
+    <fieldset class="form-group">
+      <legend class="border-auto mb-4">Register</legend>
+      {{ render_field(form.user_name) }}
+      {{ render_field(form.first_name) }}
+      {{ render_field(form.last_name) }}
+      {{ render_field(form.email) }}
+      {{ render_field(form.password) }}
+      {{ render_field(form.confirm_password) }}
+      {{ render_field(form.address) }}
+      {{ render_field(form.country) }}
+      {{ render_field(form.city) }}
+      {{ render_field(form.state) }}
+      {{ render_field(form.zipcode) }}
+      {{ render_field(form.phone) }}
+    </fieldset>
+    {{ render_button(form.submit) }}
+  </form>
+</div>
+<div class="border-top pt-3">
+  <small class="text-muted">Already have an account?<a href="{{ url_for('users.login') }}" class="ml-2">Sign in</a></small>
+</div>
+{% endblock %}

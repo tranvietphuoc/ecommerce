@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}{{ tilte }}{% endblock %}
+{% block content %}
+  <div class="content-category">
+    <div class="row">
+      <div class="col-xs-6 col-sm-4 col-md-4">
+        {% for category in categories %}
+        <a href="{{ url_for('products.detail_category', category_id=category.category_id) }}"><h4>{{ category.category_name }}</h4></a>
+        {% set quantity_of_products = category.products|length %}
+          <h5>Have {{ quantity_of_products }} products</h5>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endblock %}
