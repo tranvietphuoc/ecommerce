@@ -1,4 +1,4 @@
-#!/Users/phuoc/Desktop/samples/flask-ecom/.venv/bin/python3
+#!/Users/phuoc/Desktop/samples/e-commerce/.venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
