@@ -18,6 +18,8 @@ from core.products.forms import (
 from core.products.utils import save_product_image
 
 
+
+
 products = Blueprint("products", __name__)
 
 
