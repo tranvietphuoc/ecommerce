@@ -12,9 +12,9 @@
   </div>
 {% endmacro %}
 
-{% macro category_product(category) %}
+{% macro render_product(category) %}
   <a href="{{ url_for('products.detail_product', product.product_id) }}">
-    <img src="{{ url_for() }}" alt="{{ product.product_name }}">
+    <img src="{{ url_for('static', filename='assets/products/' + product.product_image) }}" alt="{{ product.product_name }}">
     <h5>{{ product.product_name }}</h5>
   </a>
   <h5>{{ product.product_price }}</h5>
