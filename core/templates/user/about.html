@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
-{% from '_macros.html' import render_field, render_button, render_file_field %}
+{% from '_macros.html' import render_field, render_button, render_file_field, render_categories %}
 {% block title %}About - {{ current_user.user_name }}{% endblock %}
+{% block categories %}
+  {{ render_categories(categories) }}
+{% endblock %}
 {% block content %}
 <div class="media">
   <img src="{{ picture }}" alt="{{ current_user.user_name }} profile picture" class="rounded-circle account-img" style="width: 100px; height: 100px; padding: 5px; margin: 5px;">

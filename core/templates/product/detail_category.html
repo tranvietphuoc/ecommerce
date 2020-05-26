@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
-{% from '_macros.html' import render_product %}
+{% from '_macros.html' import render_product, render_categories %}
 {% block title %}{{ title }}{% endblock %}
+{% block categories %}
+  {{ render_categories(categories) }}
+{% endblock %}
 {% block content %}
   <div class="content-detail-category">
     <div class="items">

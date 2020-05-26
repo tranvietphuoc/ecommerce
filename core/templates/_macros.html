@@ -55,3 +55,9 @@
     {{ field(class="btn btn-outline-info") }}
   </div>
 {% endmacro %}
+
+{% macro render_categories(categories) %}
+  {% for category in categories %}
+    <a href="{{ url_for('products.detail_category', category_id=category.category_id) }}" class="dropdown-item">{{ category.category_name }}</a>
+  {% endfor %}
+{% endmacro %}

@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
-{% from '_macros.html' import render_field, render_button %}
+{% from '_macros.html' import render_field, render_button, render_categories %}
 {% block title %}{{ title }}{% endblock %}
+{% block categories %}
+  {{ render_categories(categories) }}
+{% endblock %}
 {% block content %}
 <div class="content">
   <form action="" class="needs-validation" method="POST" novalidate>

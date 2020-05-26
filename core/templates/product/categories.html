@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
+{% from '_macros.html' import render_categories %}
 {% block title %}{{ tilte }}{% endblock %}
+{% block categories %}
+  {{ render_categories(categories) }}
+{% endblock %}
 {% block content %}
   <div class="content-category">
     <h4>All categories:</h4>

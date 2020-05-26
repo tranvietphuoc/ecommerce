@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
-{% from '_macros.html'  import render_field %}
+{% from '_macros.html'  import render_field, render_categories %}
 {% block title %}{{ title }}{% endblock %}
+{% block categories %}
+  {{ render_categories(categories) }}
+{% endblock %}
 {% block content %}
 <div class="content-form col-sm-8">
   <form action="{{ url_for('users.login') }}" class="needs-validation" method="POST" novalidate>

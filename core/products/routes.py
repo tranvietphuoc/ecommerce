@@ -72,7 +72,12 @@ def add_product():
         db.session.commit()
         flash(f"Add product success.", "success")
         return redirect(url_for("products.add_product"))
-    return render_template("product/add_product.html", title="Add Product", form=form)
+    return render_template(
+        "product/add_product.html",
+        title="Add Product",
+        form=form,
+        categories=categories_query,
+    )
 
 
 @products.route("/products/<int:product_id>/update", methods=("GET", "POST"))
@@ -133,6 +138,7 @@ def update_product(product_id):
             title=f"Update product {product.product_name}",
             form=form,
             product_id=product_id,
+            categories=categories_query,
         )
     return redirect(url_for("main.home"))
 
@@ -141,10 +147,12 @@ def update_product(product_id):
 def detail_product(product_id):
     """Get informations of particular product by product_id."""
     product = db.session.query(Product).get_or_404(product_id)
+    categories = db.session.query(Category).all()
     return render_template(
         "product/detail_product.html",
         title=f"Product {product.product_name} detail",
         product=product,
+        categories=categories,
     )
 
 
@@ -172,6 +180,7 @@ def add_category():
         if not current_user.has_role("superuser"):
             abort(403)
 
+    categories = db.session.query(Category).all()
     form = AddCategoryForm()
     if form.validate_on_submit():
         category_name = form.category_name.data
@@ -179,7 +188,7 @@ def add_category():
         db.session.commit()
         flash(f"Add category success.", "success")
         return redirect(url_for("products.add_category"))
-    return render_template("product/add_category.html", title="Add Category", form=form)
+    return render_template("product/add_category.html", title="Add Category", form=form, categories=categories)
 
 
 @products.route("/categories<int:category_id>/update", methods=("GET", "POST"))
@@ -191,6 +200,7 @@ def update_category(category_id):
         if not current_user.has_role("superuser"):
             abort(403)
 
+    categories = db.session.query(Category).all()
     category = db.session.query(Category).get_or_404(category_id)
     form = UpdateCategoryForm()
     if form.validate_on_submit():
@@ -205,6 +215,7 @@ def update_category(category_id):
             "product/update_category.html",
             title=f"Update category {category.category_name}",
             form=form,
+            categories=categories
         )
     return redirect(url_for("products.get_categories"))
 
@@ -214,10 +225,12 @@ def detail_category(category_id):
     """Get details of category with category_id (display category and all products of it)"""
     # need to join between Product and Category table
     result = db.session.query(Category).get_or_404(category_id)
+    categories = db.session.query(Category).all()
     return render_template(
         "product/detail_category.html",
         title=f"Category {result.category_name} detail",
         result=result,
+        categories=categories
     )
 
 

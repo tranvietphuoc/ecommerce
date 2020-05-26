@@ -1,4 +1,10 @@
-{% extends 'base.html' %} {% block title %}{{ title }}{% endblock %} {% block content %}
+{% extends 'base.html' %}
+{% from '_macros.html' import render_categories %}
+{% block title %}{{ title }}{% endblock %}
+{% block categories %}
+  {{ render_categories(categories) }}
+{% endblock %}
+{% block content %}
 <div class="row content-product">
   <div class="col-sm-4">
     <img

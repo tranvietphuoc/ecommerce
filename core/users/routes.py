@@ -8,7 +8,7 @@ from core.users.forms import (
     ResetPasswordForm,
 )
 from werkzeug.security import check_password_hash, generate_password_hash
-from core.models import User, db, Role
+from core.models import User, db, Role, Category
 from core.users.utils import save_picture, send_reset_token
 
 
@@ -20,6 +20,8 @@ def register():
     """Register"""
     if current_user.is_authenticated:
         return redirect(url_for("main.home"))
+
+    categories = db.session.query(Category).all()
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data)
@@ -43,11 +45,12 @@ def register():
         user_role.users.append(user)
         db.session.commit()
         flash(
-            f"Your account have been created. You are now able to log in.",
-            "success",
+            f"Your account have been created. You are now able to log in.", "success",
         )
         return redirect(url_for("users.login"))
-    return render_template("user/register.html", title="Register", form=form)
+    return render_template(
+        "user/register.html", title="Register", form=form, categories=categories
+    )
 
 
 @users.route("/login", methods=("GET", "POST"))
@@ -55,6 +58,8 @@ def login():
     """Log in"""
     if current_user.is_authenticated:
         return redirect(url_for("main.home"))
+
+    categories = db.session.query(Category).all()
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -62,16 +67,12 @@ def login():
             # login to user, add remember_me
             login_user(user, remember=form.remember_me.data)
             next_page = request.args.get("next")
-            return (
-                redirect(next_page)
-                if next_page
-                else redirect(url_for("main.home"))
-            )
+            return redirect(next_page) if next_page else redirect(url_for("main.home"))
         else:
-            flash(
-                f"Login unsuccessful. Please check email and password", "danger"
-            )
-    return render_template("user/login.html", title="Sign in", form=form)
+            flash(f"Login unsuccessful. Please check email and password", "danger")
+    return render_template(
+        "user/login.html", title="Sign in", form=form, categories=categories
+    )
 
 
 @users.route("/logout", methods=("GET", "POST"))
@@ -85,6 +86,7 @@ def logout():
 @login_required
 def about():
     """Update user information"""
+    categories = db.session.query(Category).all()
     form = UpdateForm()
     if form.validate_on_submit():
         if form.profile_picture.data:
@@ -113,11 +115,13 @@ def about():
         return redirect(url_for("users.about"))
     elif request.method == "GET":
         form.email.data = current_user.email
-    picture = url_for(
-        "static", filename="assets/users/" + current_user.profile_picture
-    )
+    picture = url_for("static", filename="assets/users/" + current_user.profile_picture)
     return render_template(
-        "user/about.html", title="About", picture=picture, form=form
+        "user/about.html",
+        title="About",
+        picture=picture,
+        form=form,
+        categories=categories,
     )
 
 
@@ -126,16 +130,16 @@ def send_reset():
     """Send reset token to user's email"""
     if current_user.is_authenticated:
         return redirect(url_for("main.home"))
+
+    categories = db.session.query(Category).all()
     form = SendResetTokenForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         send_reset_token(user)
-        flash(
-            f"An email sent with instructions to reset your password.", "info"
-        )
+        flash(f"An email sent with instructions to reset your password.", "info")
         redirect(url_for("users.login"))
     return render_template(
-        "user/reset_request.html", title="Send reset token", form=form
+        "user/reset_request.html", title="Send reset token", form=form, categories=categories
     )
 
 
@@ -148,15 +152,14 @@ def reset_password(token):
     if not user:
         flash(f"This token is invalid.", "warning")
         return redirect(url_for("users.send_reset"))
+
+    categories = db.session.query(Category).all()
     form = ResetPasswordForm()
     if form.validate_on_submit():
         user.password = generate_password_hash(form.password.data)
         db.session.commit()
         flash(
-            f"Your password have been updated. You are now able to login.",
-            "success",
+            f"Your password have been updated. You are now able to login.", "success",
         )
         return redirect(url_for("users.login"))
-    return render_template(
-        "user/reset_token.html", title="Reset password", form=form
-    )
+    return render_template("user/reset_token.html", title="Reset password", form=form, categories=categories)
