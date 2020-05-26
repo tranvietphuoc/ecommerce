@@ -56,12 +56,14 @@ def create_app(config_class=Config):
     from core.main.routes import main
     from core.errors.routes import errors
     from core.products.routes import products
+    from core.cart.routes import cart
 
     # then register these blueprints here
     app.register_blueprint(users)
     app.register_blueprint(main)
     app.register_blueprint(errors)
     app.register_blueprint(products)
+    app.register_blueprint(cart)
 
     # define some utilities if use flask command
     @app.shell_context_processor

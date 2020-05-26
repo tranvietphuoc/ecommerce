@@ -12,17 +12,19 @@
   </div>
 {% endmacro %}
 
-{% macro render_product(category) %}
-  <a href="{{ url_for('products.detail_product', product.product_id) }}">
-    <img src="{{ url_for('static', filename='assets/products/' + product.product_image) }}" alt="{{ product.product_name }}">
-    <h5>{{ product.product_name }}</h5>
-  </a>
-  <h5>{{ product.product_price }}</h5>
-  <h5>{{ product.discounted_price }}</h5>
-  <h5>{{ product.product_rating }}</h5>
+{% macro render_product(product) %}
+  <div class="col-sm-3">
+    <a href="{{ url_for('products.detail_product', product_id=product.product_id) }}">
+      <img src="{{ url_for('static', filename='assets/products/' + product.product_image) }}" alt="{{ product.product_name }}" class="product-img">
+      <h5>{{ product.product_name }}</h5>
+    </a>
+    <h5 class="price" style="text-decoration: line-through">{{ product.product_price }}</h5>
+    <h5>{{ product.discounted_price }}</h5>
+    <h5>{{ product.product_rating }}</h5>
+  </div>
 {% endmacro %}
 
-{% macro render_select_field(field, placeholder='Select...') %}
+{% macro render_select_field(field) %}
   <div class="form-group">
     {{ field.label(class="form-control-label") }}
     {% if field.errors %}

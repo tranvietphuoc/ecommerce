@@ -18,8 +18,6 @@ from core.products.forms import (
 from core.products.utils import save_product_image
 
 
-
-
 products = Blueprint("products", __name__)
 
 
@@ -215,11 +213,11 @@ def update_category(category_id):
 def detail_category(category_id):
     """Get details of category with category_id (display category and all products of it)"""
     # need to join between Product and Category table
-    category = db.session.query(Category).get_or_404(category_id)
+    result = db.session.query(Category).get_or_404(category_id)
     return render_template(
         "product/detail_category.html",
-        title=f"Category {category.category_name} detail",
-        category=category,
+        title=f"Category {result.category_name} detail",
+        result=result,
     )
 
 
