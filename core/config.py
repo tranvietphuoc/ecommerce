@@ -35,6 +35,8 @@ class Config:
         "db": DB_NAME,
     }
     SQLALCHEMY_DATABASE_URI = DB_URI%POSTGRES
+    LANGUAGE = ['en', 'vi']
+    ELASTICSEARCH_URL = os.getenv('ELASTICSEARCH_URL')
     #@property
     #def SQLALCHEMY_DATABASE_URI(self):
     #    return self.DB_URI % self.POSTGRES

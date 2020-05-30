@@ -7,11 +7,8 @@
 {% block content %}
 <div class="row content-product">
   <div class="col-sm-4">
-    <img
-      src="{{ url_for('static', filename='assets/products/' + product.product_image) }}"
-      alt="{{ product.product_name }}"
-      class="product-img"
-    />
+    <img src="{{ url_for('static', filename='assets/products/' + product.product_image) }}" alt="{{ product.product_name }}"
+      class="product-img"/>
   </div>
   <div class="col-sm-8">
     <div class="row">
@@ -25,9 +22,8 @@
           ><span>{{ product.discounted_price }}</span>
         </h5>
         <h5>
-          <span>Sale off: </span
-          ><span>{{ product.discounted_price/product.product_price*100 }}</span
-          >%
+          <span>Sale off: </span>
+          <span>{{ product.discounted_price/product.product_price*100 }}</span>%
         </h5>
         <h5>
           <span>Quantity:</span><span>{{ product.quantity }}</span>
@@ -49,40 +45,18 @@
 </div>
 {% if current_user.is_superuser %}
 <div>
-  <a
-    href="{{ url_for('products.update_product', product_id=product.product_id) }}"
-    class="btn btn-secondary btn-sm m-1"
-    >Update</a
-  >
-  <button
-    type="button"
-    class="btn btn-danger btn-sm m-1"
-    data-toggle="modal"
-    data-target="#deleteModal"
-  >
-    Delete
-  </button>
+  <a href="{{ url_for('products.update_product', product_id=product.product_id) }}" class="btn btn-secondary btn-sm m-1" >Update</a>
+  <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
 </div>
 {% endif %}
 <!--Modal-->
 <div
-  class="modal fade"
-  id="deleteModal"
-  tabindex="-1"
-  role="dialog"
-  aria-labelledby="deleteModalLabel"
-  aria-hidden="true"
->
+  class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="deleteModalLabel">Delete this product</h5>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-        >
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -93,16 +67,8 @@
         <button type="button" class="btn btn-secondary" data-dismiss="modal">
           Close
         </button>
-        <form
-          action="{{ url_for('products.delete_product', product_id=product.product_id) }}"
-          method="POST"
-        >
-          <input
-            type="submit"
-            name="Delete"
-            class="btn btn-danger"
-            value="Delete"
-          />
+        <form action="{{ url_for('products.delete_product', product_id=product.product_id) }}" method="POST">
+          <input type="submit" name="Delete" class="btn btn-danger" value="Delete"/>
         </form>
       </div>
     </div>

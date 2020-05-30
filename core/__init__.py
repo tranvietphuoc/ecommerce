@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_admin import Admin
 from flask_login import LoginManager
 from flask_mail import Mail
@@ -8,10 +8,13 @@ from core.admin.views import AdminView, ModelView
 import click
 from werkzeug.security import generate_password_hash
 from flask_script import prompt_pass, prompt_bool, prompt
+from flask_babel import Babel
+from elasticsearch import Elasticsearch
 
 
 # initialize all extensions
 mail = Mail()
+babel = Babel()
 
 login_manager = LoginManager()
 login_manager.login_view = "users.login"  # use blueprint
@@ -22,6 +25,9 @@ def create_app(config_class=Config):
     """Create Flask app with some extensions"""
     app = Flask(__name__)
     app.config.from_object(config_class)
+
+    # elasticsearch
+    app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) if app.config['ELASTICSEARCH_URL'] else None
 
     # init all extensions with flask app
     # first import from models
@@ -37,6 +43,12 @@ def create_app(config_class=Config):
     # init other extensions
     login_manager.init_app(app)
     mail.init_app(app)
+
+    # babel
+    babel.init_app(app)
+    @babel.localeselector
+    def get_locale():
+        return request.accept_languages.best_match(app.config['LANGUAGE'])
 
     # Admin panel follow db
     admin = Admin(app, name="E-commerce admin")
