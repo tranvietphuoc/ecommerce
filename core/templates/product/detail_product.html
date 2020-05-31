@@ -45,7 +45,7 @@
 </div>
 {% if current_user.is_superuser %}
 <div>
-  <a href="{{ url_for('products.update_product', product_id=product.product_id) }}" class="btn btn-secondary btn-sm m-1" >Update</a>
+  <a href="{{ url_for('products.update_product', product_id=product.id) }}" class="btn btn-secondary btn-sm m-1" >Update</a>
   <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
 </div>
 {% endif %}
@@ -67,7 +67,7 @@
         <button type="button" class="btn btn-secondary" data-dismiss="modal">
           Close
         </button>
-        <form action="{{ url_for('products.delete_product', product_id=product.product_id) }}" method="POST">
+        <form action="{{ url_for('products.delete_product', product_id=product.id) }}" method="POST">
           <input type="submit" name="Delete" class="btn btn-danger" value="Delete"/>
         </form>
       </div>

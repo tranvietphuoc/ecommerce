@@ -5,9 +5,49 @@ from flask_login import UserMixin
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
+from core.search import add_to_index, remove_from_index, query_index
 
 
 db = SQLAlchemy()
+
+
+class SearchableMixin:
+    """Use for elasticsearch."""
+    @classmethod
+    def search(cls, expression, page, per_page):
+        ids, total = query_index(cls.__tablename__, expression, page, per_page)
+        if total == 0:
+            return cls.query.filter_by(id=0), 0
+        when = []
+        for i in range(len(ids)):
+            when.append((ids[i], i))
+        return cls.query.filter(cls.id.in_(ids)).order_by(db.case(when, value=cls.id)), total
+
+    @classmethod
+    def before_commit(cls, session):
+        session._changes = {
+                'add': list(session.new),
+                'update': list(session.dirty),
+                'delete': list(session.deleted)
+                }
+
+    @classmethod
+    def after_commit(cls, session):
+        for obj in session._changes['add']:
+            if isinstance(obj, SearchableMixin):
+                add_to_index(obj.__tablename__, obj)
+        for obj in session._changes['update']:
+            if isinstance(obj, SearchableMixin):
+                add_to_index(obj.__tablename__, obj)
+        for obj in session._changes['delete']:
+            if isinstance(obj, SearchableMixin):
+                remove_from_index(obj.__tablename__, obj)
+        session._changes = None
+
+    @classmethod
+    def reindex(cls):
+        for obj in cls.query:
+            add_to_index(cls.__tablename__, obj)
 
 
 # this decorater is used to handle session
@@ -41,8 +81,8 @@ def unauthorized():
 # many-to-many relationship
 users_roles = db.Table(
     "users_roles",
-    db.Column("user_id", db.Integer, db.ForeignKey("user.user_id"), primary_key=True),
-    db.Column("role_id", db.Integer, db.ForeignKey("role.role_id"), primary_key=True),
+    db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
+    db.Column("role_id", db.Integer, db.ForeignKey("role.id"), primary_key=True),
 )
 
 
@@ -52,11 +92,11 @@ class Role(db.Model):
     # must have __tablename__ with lower case
     __tablename__ = "role"
     __table_args__ = {"extend_existing": True}
-    role_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     role_name = db.Column(db.String(30), unique=True)
 
     def __repr__(self):
-        return f"<Role('{self.role_name}')>"
+        return f"<Role('{self.id}', '{self.role_name}')>"
 
 
 class User(db.Model, UserMixin):
@@ -66,7 +106,7 @@ class User(db.Model, UserMixin):
     __tablename__ = "user"
     __table_args__ = {"extend_existing": True}
 
-    user_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     user_name = db.Column(db.String(20), nullable=False, unique=True)
     first_name = db.Column(db.String(40))
     last_name = db.Column(db.String(40))
@@ -83,20 +123,20 @@ class User(db.Model, UserMixin):
     roles = db.relationship(
         "Role",
         secondary=users_roles,
-        primaryjoin=(users_roles.c.user_id == user_id),
+        primaryjoin=(users_roles.c.user_id == id),
         secondaryjoin=None,
         backref=db.backref("users", lazy="dynamic"),
     )
 
     def __repr__(self):
-        return f"<User('{self.user_name}', '{self.email}', '{self.phone}')>"
+        return f"<User('{self.id}', '{self.user_name}', '{self.email}', '{self.phone}')>"
 
     def __str__(self):
         return f"User: {self.user_name}"
 
     def get_id(self):
         """Method to get user_id to pass into login_user(). Must be a function"""
-        return self.user_id
+        return self.id
 
     def has_role(self, *args):
         set_args = set()
@@ -111,7 +151,7 @@ class User(db.Model, UserMixin):
         Use TimedJSONWebSignatureSerializer of itsdangerous module
         """
         s = Serializer(current_app.config["SECRET_KEY"], expire_secs)
-        return s.dumps({"user_id": self.user_id}).decode("utf-8")
+        return s.dumps({"user_id": self.id}).decode("utf-8")
 
     @staticmethod
     def verify_password(form):
@@ -137,12 +177,12 @@ class User(db.Model, UserMixin):
 products_categories = db.Table(
     "products_categories",
     db.Column(
-        "product_id", db.Integer, db.ForeignKey("product.product_id"), primary_key=True,
+        "product_id", db.Integer, db.ForeignKey("product.id"), primary_key=True,
     ),
     db.Column(
         "category_id",
         db.Integer,
-        db.ForeignKey("category.category_id"),
+        db.ForeignKey("category.id"),
         primary_key=True,
     ),
 )
@@ -154,7 +194,7 @@ class Product(db.Model):
     __tablename__ = "product"
     __table_args__ = {"extend_existing": True}
     __searchable__ = ['body']
-    product_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     sku = db.Column(db.String(20), nullable=False)
     product_name = db.Column(db.String(100), nullable=False)
     product_description = db.Column(db.String(100), nullable=False)
@@ -172,13 +212,13 @@ class Product(db.Model):
     categories = db.relationship(
         "Category",
         secondary=products_categories,
-        primaryjoin=(products_categories.c.product_id == product_id),
+        primaryjoin=(products_categories.c.product_id == id),
         secondaryjoin=None,
         backref=db.backref("products", lazy="dynamic"),
     )
 
     def __repr__(self):
-        return f"<Product('{self.product_name}', '{self.sku}',\
+        return f"<Product('{self.id}', '{self.product_name}', '{self.sku}',\
         '{self.product_image}', '{self.quantity}', '{self.product_price}',\
         '{self.discounted_price}', '{[c for c in self.categories]}')>"
 
@@ -192,7 +232,7 @@ class Category(db.Model):
     __tablename__ = "category"
     __table_args__ = {"extend_existing": True}
     __searchable__ = ['body']
-    category_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     category_name = db.Column(db.String(100), nullable=False)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     # one to many relationship with Product table
@@ -201,7 +241,7 @@ class Category(db.Model):
     # )
 
     def __repr__(self):
-        return f"<Category('{self.category_name}')>"
+        return f"<Category('{self.id}', '{self.category_name}')>"
 
     def __str__(self):
         return f"Category: {self.category_name}"
@@ -213,10 +253,10 @@ class Cart(db.Model):
     __tablename__ = "cart"
     __table_args__ = {"extend_existing": True}
     user_id = db.Column(
-        db.Integer, db.ForeignKey("user.user_id"), nullable=False, primary_key=True,
+        db.Integer, db.ForeignKey("user.id"), nullable=False, primary_key=True,
     )
     product_id = db.Column(
-        db.Integer, db.ForeignKey("product.product_id"), nullable=True
+        db.Integer, db.ForeignKey("product.id"), nullable=True
     )
     quantity = db.Column(db.Integer, nullable=True)
 
@@ -230,16 +270,16 @@ class Order(db.Model):
 
     __tablename__ = "order"
     __table_args__ = {"extend_existing": True}
-    order_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.user_id"), nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     product_id = db.Column(
-        db.Integer, db.ForeignKey("product.product_id"), nullable=False
+        db.Integer, db.ForeignKey("product.id"), nullable=False
     )
     total_price = db.Column(db.DECIMAL, nullable=False)
     ordered_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     def __repr__(self):
-        return f"<Order('{self.order_id}', '{self.order_date}',\
+        return f"<Order('{self.id}', '{self.order_date}',\
         '{self.total_price}', '{self.user_id}'>"
 
     def __str__(self):
@@ -251,15 +291,15 @@ class OrderedProduct(db.Model):
 
     __tablename__ = "orderedproduct"
     __table_args__ = {"extend_existing": True}
-    order_product_id = db.Column(db.Integer, primary_key=True)
-    order_id = db.Column(db.Integer, db.ForeignKey("order.order_id"), nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    order_id = db.Column(db.Integer, db.ForeignKey("order.id"), nullable=False)
     product_id = db.Column(
-        db.Integer, db.ForeignKey("product.product_id"), nullable=False
+        db.Integer, db.ForeignKey("product.id"), nullable=False
     )
     quantity = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):
-        return f"<OrderProduct('{self.order_product_id}', '{self.order_id}',\
+        return f"<OrderProduct('{self.id}', '{self.order_id}',\
         '{self.product_id}', '{self.quantity}')>"
 
 
@@ -268,8 +308,8 @@ class SaleTransaction(db.Model):
 
     __tablename__ = "saletransaction"
     __table_args__ = {"extend_existing": True}
-    transaction_id = db.Column(db.Integer, primary_key=True)
-    order_id = db.Column(db.Integer, db.ForeignKey("order.order_id"), nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    order_id = db.Column(db.Integer, db.ForeignKey("order.id"), nullable=False)
     transaction_date = db.Column(db.DateTime, nullable=False)
     amount = db.Column(db.DECIMAL, nullable=False)
     cc_number = db.Column(db.String(50), nullable=False)
@@ -277,9 +317,9 @@ class SaleTransaction(db.Model):
     response = db.Column(db.String(50), nullable=False)
 
     def __repr__(self):
-        return f"<OrderTransaction('{self.transaction_id}', '{self.order_id}',\
+        return f"<OrderTransaction('{self.id}', '{self.order_id}',\
         '{self.amount}', '{self.cc_number}', '{self.cc_type}',\
         '{self.response}', '{self.transaction_date}')>"
 
     def __str__(self):
-        return f"Transaction: {self.transaction_id} on {self.transaction_date}"
+        return f"Transaction: {self.id} on {self.transaction_date}"

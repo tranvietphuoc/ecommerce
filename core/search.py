@@ -2,6 +2,10 @@ from flask import current_app
 
 
 def add_to_index(index, model):
+    """
+    :index - name of index
+    :model - the model of databases
+    """
     if not current_app.elasticsearch:
         return
     payload = {}
@@ -12,12 +16,22 @@ def add_to_index(index, model):
 
 
 def remove_from_index(index, model):
+    """
+    :index - name of index
+    :model - the model
+    """
     if not current_app.elasticsearch:
         return
-    current_app.elasticsearch.delete(index=index, id=mode.id)
+    current_app.elasticsearch.delete(index=index, id=model.id)
 
 
 def query_index(index, query, page, per_page):
+    """
+    :index - name of index
+    :query
+    :page - the number of pages
+    :per_page - the number of results per page
+    """
     if not current_app.elasticsearch:
         return [], 0
     search = current_app.elasticsearch.search(
