@@ -11,9 +11,7 @@ def get_product_detail(product_id):
 
 def save_product_image(form_image, product_name):
     _, file_ext = os.path.splitext(form_image.filename)
-    image_name = (
-        hashlib.sha256(product_name.encode("utf-8")).hexdigest() + file_ext
-    )
+    image_name = hashlib.sha256(product_name.encode("utf-8")).hexdigest() + file_ext
     image_path = os.path.join(
         current_app.root_path, "static/assets/products", image_name
     )

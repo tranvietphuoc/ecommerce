@@ -13,6 +13,7 @@ db = SQLAlchemy()
 
 class SearchableMixin:
     """Use for elasticsearch."""
+
     @classmethod
     def search(cls, expression, page, per_page):
         ids, total = query_index(cls.__tablename__, expression, page, per_page)
@@ -21,25 +22,28 @@ class SearchableMixin:
         when = []
         for i in range(len(ids)):
             when.append((ids[i], i))
-        return cls.query.filter(cls.id.in_(ids)).order_by(db.case(when, value=cls.id)), total
+        return (
+            cls.query.filter(cls.id.in_(ids)).order_by(db.case(when, value=cls.id)),
+            total,
+        )
 
     @classmethod
     def before_commit(cls, session):
         session._changes = {
-                'add': list(session.new),
-                'update': list(session.dirty),
-                'delete': list(session.deleted)
-                }
+            "add": list(session.new),
+            "update": list(session.dirty),
+            "delete": list(session.deleted),
+        }
 
     @classmethod
     def after_commit(cls, session):
-        for obj in session._changes['add']:
+        for obj in session._changes["add"]:
             if isinstance(obj, SearchableMixin):
                 add_to_index(obj.__tablename__, obj)
-        for obj in session._changes['update']:
+        for obj in session._changes["update"]:
             if isinstance(obj, SearchableMixin):
                 add_to_index(obj.__tablename__, obj)
-        for obj in session._changes['delete']:
+        for obj in session._changes["delete"]:
             if isinstance(obj, SearchableMixin):
                 remove_from_index(obj.__tablename__, obj)
         session._changes = None
@@ -48,6 +52,10 @@ class SearchableMixin:
     def reindex(cls):
         for obj in cls.query:
             add_to_index(cls.__tablename__, obj)
+
+
+db.event.listen(db.session, "before_commit", SearchableMixin.before_commit)
+db.event.listen(db.session, "after_commit", SearchableMixin.after_commit)
 
 
 # this decorater is used to handle session
@@ -129,7 +137,9 @@ class User(db.Model, UserMixin):
     )
 
     def __repr__(self):
-        return f"<User('{self.id}', '{self.user_name}', '{self.email}', '{self.phone}')>"
+        return (
+            f"<User('{self.id}', '{self.user_name}', '{self.email}', '{self.phone}')>"
+        )
 
     def __str__(self):
         return f"User: {self.user_name}"
@@ -176,24 +186,19 @@ class User(db.Model, UserMixin):
 # between Product and Category
 products_categories = db.Table(
     "products_categories",
+    db.Column("product_id", db.Integer, db.ForeignKey("product.id"), primary_key=True,),
     db.Column(
-        "product_id", db.Integer, db.ForeignKey("product.id"), primary_key=True,
-    ),
-    db.Column(
-        "category_id",
-        db.Integer,
-        db.ForeignKey("category.id"),
-        primary_key=True,
+        "category_id", db.Integer, db.ForeignKey("category.id"), primary_key=True,
     ),
 )
 
 
-class Product(db.Model):
+class Product(SearchableMixin, db.Model):
     """Product table. Has many-to-many with Category table."""
 
     __tablename__ = "product"
     __table_args__ = {"extend_existing": True}
-    __searchable__ = ['body']
+    __searchable__ = ["body"]
     id = db.Column(db.Integer, primary_key=True)
     sku = db.Column(db.String(20), nullable=False)
     product_name = db.Column(db.String(100), nullable=False)
@@ -231,7 +236,7 @@ class Category(db.Model):
 
     __tablename__ = "category"
     __table_args__ = {"extend_existing": True}
-    __searchable__ = ['body']
+    __searchable__ = ["body"]
     id = db.Column(db.Integer, primary_key=True)
     category_name = db.Column(db.String(100), nullable=False)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
@@ -255,9 +260,7 @@ class Cart(db.Model):
     user_id = db.Column(
         db.Integer, db.ForeignKey("user.id"), nullable=False, primary_key=True,
     )
-    product_id = db.Column(
-        db.Integer, db.ForeignKey("product.id"), nullable=True
-    )
+    product_id = db.Column(db.Integer, db.ForeignKey("product.id"), nullable=True)
     quantity = db.Column(db.Integer, nullable=True)
 
     def __repr__(self):
@@ -272,9 +275,7 @@ class Order(db.Model):
     __table_args__ = {"extend_existing": True}
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    product_id = db.Column(
-        db.Integer, db.ForeignKey("product.id"), nullable=False
-    )
+    product_id = db.Column(db.Integer, db.ForeignKey("product.id"), nullable=False)
     total_price = db.Column(db.DECIMAL, nullable=False)
     ordered_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
@@ -293,9 +294,7 @@ class OrderedProduct(db.Model):
     __table_args__ = {"extend_existing": True}
     id = db.Column(db.Integer, primary_key=True)
     order_id = db.Column(db.Integer, db.ForeignKey("order.id"), nullable=False)
-    product_id = db.Column(
-        db.Integer, db.ForeignKey("product.id"), nullable=False
-    )
+    product_id = db.Column(db.Integer, db.ForeignKey("product.id"), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):

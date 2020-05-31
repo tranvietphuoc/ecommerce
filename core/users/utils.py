@@ -10,8 +10,10 @@ import hashlib
 # Save profile picture
 def save_picture(form_picture, user_name):
     _, file_ext = os.path.splitext(form_picture.filename)
-    picture_name = hashlib.sha256(user_name.encode('utf-8')).hexdigest() + file_ext
-    picture_path = os.path.join(current_app.root_path, "static/assets/users", picture_name)
+    picture_name = hashlib.sha256(user_name.encode("utf-8")).hexdigest() + file_ext
+    picture_path = os.path.join(
+        current_app.root_path, "static/assets/users", picture_name
+    )
     output_size = (100, 100)
     img = Image.open(form_picture)
     img.thumbnail(output_size)

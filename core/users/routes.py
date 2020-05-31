@@ -139,7 +139,10 @@ def send_reset():
         flash(f"An email sent with instructions to reset your password.", "info")
         redirect(url_for("users.login"))
     return render_template(
-        "user/reset_request.html", title="Send reset token", form=form, categories=categories
+        "user/reset_request.html",
+        title="Send reset token",
+        form=form,
+        categories=categories,
     )
 
 
@@ -162,4 +165,9 @@ def reset_password(token):
             f"Your password have been updated. You are now able to login.", "success",
         )
         return redirect(url_for("users.login"))
-    return render_template("user/reset_token.html", title="Reset password", form=form, categories=categories)
+    return render_template(
+        "user/reset_token.html",
+        title="Reset password",
+        form=form,
+        categories=categories,
+    )

@@ -27,7 +27,11 @@ def create_app(config_class=Config):
     app.config.from_object(config_class)
 
     # elasticsearch
-    app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) if app.config['ELASTICSEARCH_URL'] else None
+    app.elasticsearch = (
+        Elasticsearch([app.config["ELASTICSEARCH_URL"]])
+        if app.config["ELASTICSEARCH_URL"]
+        else None
+    )
 
     # init all extensions with flask app
     # first import from models
@@ -46,9 +50,9 @@ def create_app(config_class=Config):
 
     # babel
     babel.init_app(app)
-    @babel.localeselector
-    def get_locale():
-        return request.accept_languages.best_match(app.config['LANGUAGE'])
+    # @babel.localeselector
+    # def get_locale():
+    #    return request.accept_languages.best_match(app.config['LANGUAGE'])
 
     # Admin panel follow db
     admin = Admin(app, name="E-commerce admin")

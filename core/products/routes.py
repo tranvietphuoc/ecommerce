@@ -188,7 +188,12 @@ def add_category():
         db.session.commit()
         flash(f"Add category success.", "success")
         return redirect(url_for("products.add_category"))
-    return render_template("product/add_category.html", title="Add Category", form=form, categories=categories)
+    return render_template(
+        "product/add_category.html",
+        title="Add Category",
+        form=form,
+        categories=categories,
+    )
 
 
 @products.route("/categories<int:category_id>/update", methods=("GET", "POST"))
@@ -215,7 +220,7 @@ def update_category(category_id):
             "product/update_category.html",
             title=f"Update category {category.category_name}",
             form=form,
-            categories=categories
+            categories=categories,
         )
     return redirect(url_for("products.get_categories"))
 
@@ -230,7 +235,7 @@ def detail_category(category_id):
         "product/detail_category.html",
         title=f"Category {result.category_name} detail",
         result=result,
-        categories=categories
+        categories=categories,
     )
 
 
