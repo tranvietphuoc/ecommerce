@@ -1,5 +1,5 @@
 from core.models import Cart, db, Product
-from flask import Blueprint, redirect, render_template, url_for
+from flask import Blueprint, redirect, render_template, url_for, request
 
 
 cart = Blueprint("cart", __name__)

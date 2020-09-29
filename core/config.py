@@ -50,3 +50,5 @@ class ProductionConfig(Config):
 class TestingConfig(Config):
     TESTING = True
     SECRET_KEY = "bad_key"
+
+

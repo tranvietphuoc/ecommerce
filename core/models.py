@@ -85,7 +85,7 @@ def unauthorized():
     return redirect(url_for("users.login"))
 
 
-# define a auxiliary table in relationship with Role and User model
+# define an auxiliary table in relationship with Role and User model
 # many-to-many relationship
 users_roles = db.Table(
     "users_roles",
@@ -100,6 +100,7 @@ class Role(db.Model):
     # must have __tablename__ with lower case
     __tablename__ = "role"
     __table_args__ = {"extend_existing": True}
+
     id = db.Column(db.Integer, primary_key=True)
     role_name = db.Column(db.String(30), unique=True)
 
@@ -149,9 +150,7 @@ class User(db.Model, UserMixin):
         return self.id
 
     def has_role(self, *args):
-        set_args = set()
-        for arg in args:
-            set_args.add(arg)
+        set_args = {arg for arg in args}  # set comprehenstion
         return set_args.issubset({role.role_name for role in self.roles})
 
     # define a method to get reset token, life time is 30 minutes
@@ -199,6 +198,7 @@ class Product(SearchableMixin, db.Model):
     __tablename__ = "product"
     __table_args__ = {"extend_existing": True}
     __searchable__ = ["body"]
+
     id = db.Column(db.Integer, primary_key=True)
     sku = db.Column(db.String(20), nullable=False)
     product_name = db.Column(db.String(100), nullable=False)
@@ -231,12 +231,13 @@ class Product(SearchableMixin, db.Model):
         return f"Product: {self.product_name} - quantity: {self.quantity}"
 
 
-class Category(db.Model):
+class Category(SearchableMixin, db.Model):
     """Category table. Has many-to-many relationship with Product table."""
 
     __tablename__ = "category"
     __table_args__ = {"extend_existing": True}
     __searchable__ = ["body"]
+
     id = db.Column(db.Integer, primary_key=True)
     category_name = db.Column(db.String(100), nullable=False)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
@@ -257,6 +258,7 @@ class Cart(db.Model):
 
     __tablename__ = "cart"
     __table_args__ = {"extend_existing": True}
+
     user_id = db.Column(
         db.Integer, db.ForeignKey("user.id"), nullable=False, primary_key=True,
     )
@@ -273,6 +275,7 @@ class Order(db.Model):
 
     __tablename__ = "order"
     __table_args__ = {"extend_existing": True}
+
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey("product.id"), nullable=False)
@@ -292,6 +295,7 @@ class OrderedProduct(db.Model):
 
     __tablename__ = "orderedproduct"
     __table_args__ = {"extend_existing": True}
+
     id = db.Column(db.Integer, primary_key=True)
     order_id = db.Column(db.Integer, db.ForeignKey("order.id"), nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey("product.id"), nullable=False)
@@ -307,6 +311,7 @@ class SaleTransaction(db.Model):
 
     __tablename__ = "saletransaction"
     __table_args__ = {"extend_existing": True}
+
     id = db.Column(db.Integer, primary_key=True)
     order_id = db.Column(db.Integer, db.ForeignKey("order.id"), nullable=False)
     transaction_date = db.Column(db.DateTime, nullable=False)

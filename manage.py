@@ -62,7 +62,8 @@ def create(superuser):
             is_superuser=True,
         )
         db.session.add(user)
-        superuser_role = db.session.query(Role).filter_by(role_name="superuser").first()
+        superuser_role = db.session.query(
+            Role).filter_by(role_name="superuser").first()
         superuser_role.users.append(user)
         db.session.commit()
         print(f"User {name} has been created.")
@@ -72,3 +73,5 @@ def create(superuser):
 
 if __name__ == "__main__":
     manager.run()
+
+

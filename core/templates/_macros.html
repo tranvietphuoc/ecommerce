@@ -1,63 +1,53 @@
 {% macro render_field(field) %}
-  <div class="form-group">
-    {{ field.label(class="form-control-label") }}
-    {% if field.errors %}
-      {{ field(class="form-control form-control-sm is-invalid") }}
-      {% for error in field.errors %}
-        <span>{{ error }}</span>
-      {% endfor %}
-    {% else %}
-      {{ field(class="form-control form-control-sm") }}
-    {% endif %}
-  </div>
-{% endmacro %}
-
-{% macro render_product(product) %}
-  <div class="col-sm-3">
-    <a href="{{ url_for('products.detail_product', product_id=product.id) }}">
-      <img src="{{ url_for('static', filename='assets/products/' + product.product_image) }}" alt="{{ product.product_name }}" class="product-img">
-      <h5>{{ product.product_name }}</h5>
-    </a>
-    <h5 class="price" style="text-decoration: line-through">{{ product.product_price }}</h5>
-    <h5>{{ product.discounted_price }}</h5>
-    <h5>{{ product.product_rating }}</h5>
-  </div>
-{% endmacro %}
-
-{% macro render_select_field(field) %}
-  <div class="form-group">
-    {{ field.label(class="form-control-label") }}
-    {% if field.errors %}
-      {{ field(class="form-control form-control-sm is-invalid") }}
-      {% for error in field.errors %}
-      <span>{{ error }}</span>
-      {% endfor %}
-    {% else %}
-      {{ field(class="form-control select-categories") }}
-    {% endif %}
-  </div>
-{% endmacro %}
-
-{% macro render_file_field(field) %}
-  <div class="form-group">
-    {{ field.label() }}
-    {{ field(class="form-control-file") }}
-    {% if field.errors %}
-      {% for error in field.errors %}
-        <span class="text-danger">{{ error }}</span>
-      {% endfor %}
-    {% endif %}
-  </div>
-{% endmacro %}
-
-{% macro render_button(field) %}
-  <div class="form-group">
-    {{ field(class="btn btn-outline-info") }}
-  </div>
-{% endmacro %}
-
-{% macro render_categories(categories) %}
-  {% for category in categories %}
-    <a href="{{ url_for('products.detail_category', category_id=category.id) }}" class="dropdown-item">{{ category.category_name }}</a>
-  {% endfor %}
-{% endmacro %}
+<div class="form-group">
+  {{ field.label(class="form-control-label") }} {% if field.errors %} {{
+  field(class="form-control form-control-sm is-invalid") }} {% for error in
+  field.errors %}
+  <span>{{ error }}</span>
+  {% endfor %} {% else %} {{ field(class="form-control form-control-sm") }} {%
+  endif %}
+</div>
+{% endmacro %} {% macro render_product(product) %}
+<div class="col-sm-3">
+  <a href="{{ url_for('products.detail_product', product_id=product.id) }}">
+    <img
+      src="{{ url_for('static', filename='assets/products/' + product.product_image) }}"
+      alt="{{ product.product_name }}"
+      class="product-img"
+    />
+    <h5>{{ product.product_name }}</h5>
+  </a>
+  <h5 class="price" style="text-decoration: line-through;">
+    {{ product.product_price }}
+  </h5>
+  <h5>{{ product.discounted_price }}</h5>
+  <h5>{{ product.product_rating }}</h5>
+</div>
+{% endmacro %} {% macro render_select_field(field) %}
+<div class="form-group">
+  {{ field.label(class="form-control-label") }} {% if field.errors %} {{
+  field(class="form-control form-control-sm is-invalid") }} {% for error in
+  field.errors %}
+  <span>{{ error }}</span>
+  {% endfor %} {% else %} {{ field(class="form-control select-categories") }} {%
+  endif %}
+</div>
+{% endmacro %} {% macro render_file_field(field) %}
+<div class="form-group">
+  {{ field.label() }} {{ field(class="form-control-file") }} {% if field.errors
+  %} {% for error in field.errors %}
+  <span class="text-danger">{{ error }}</span>
+  {% endfor %} {% endif %}
+</div>
+{% endmacro %} {% macro render_button(field) %}
+<div class="form-group">
+  {{ field(class="btn btn-outline-info") }}
+</div>
+{% endmacro %} {% macro render_categories(categories) %} {% for category in
+categories %}
+<a
+  href="{{ url_for('products.detail_category', category_id=category.id) }}"
+  class="dropdown-item"
+  >{{ category.category_name }}</a
+>
+{% endfor %} {% endmacro %}

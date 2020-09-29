@@ -1,31 +1,39 @@
-{% extends 'base.html' %}
-{% from '_macros.html'  import render_field, render_categories %}
-{% block title %}{{ title }}{% endblock %}
-{% block categories %}
-  {{ render_categories(categories) }}
-{% endblock %}
-{% block content %}
-<div class="content-form col-sm-8">
-  <form action="{{ url_for('users.login') }}" class="needs-validation" method="POST" novalidate>
-    {{ form.hidden_tag() }}
-    <fieldset class="form-group">
-      <legend class="border-auto mb-4">Log in</legend>
-      {{ render_field(form.email) }}
-      {{ render_field(form.password) }}
-      <div class="form-check">
-        {{ form.remember_me(class="form-check-input") }}
-        {{ form.remember_me.label(class="form-check-label") }}
+{% extends 'base.html' %} {% from '_macros.html' import render_field,
+render_categories %} {% block title %}{{ title }}{% endblock %} {% block
+categories %} {{ render_categories(categories) }} {% endblock %} {% block
+content %}
+<div class="row justify-content-center">
+  <div class="content-form col-sm-8">
+    <form
+      action="{{ url_for('users.login') }}"
+      class="needs-validation"
+      method="POST"
+      novalidate
+    >
+      {{ form.hidden_tag() }}
+      <fieldset class="form-group">
+        <legend class="border-auto mb-4">Log in</legend>
+        {{ render_field(form.email) }} {{ render_field(form.password) }}
+        <div class="form-check">
+          {{ form.remember_me(class="form-check-input") }} {{
+          form.remember_me.label(class="form-check-label") }}
+        </div>
+      </fieldset>
+      <div class="form-group">
+        {{ form.submit(class="btn btn-outline-info") }}
+        <small class="text-muted ml-2">
+          <a href="{{ url_for('users.send_reset') }}">Forgot password?</a>
+        </small>
       </div>
-    </fieldset>
-    <div class="form-group">
-      {{ form.submit(class="btn btn-outline-info") }}
-      <small class="text-muted ml-2">
-        <a href="{{ url_for('users.send_reset') }}">Forgot password?</a>
-      </small>
-    </div>
-  </form>
+    </form>
+  </div>
+  <div class="border-top pt-3">
+    <small class="text-muted"
+      >Need an account?<a href="{{ url_for('users.register') }}" class="ml-2"
+        >Sign up</a
+      ></small
+    >
+  </div>
 </div>
-<div class="border-top pt-3">
-  <small class="text-muted">Need an account?<a href="{{ url_for('users.register') }}" class="ml-2">Sign up</a></small>
-</div>
+
 {% endblock %}
