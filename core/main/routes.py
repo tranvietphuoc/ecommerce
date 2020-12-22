@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, g, redirect, url_for
+from flask import Blueprint, render_template, request, g, redirect, url_for, current_app
 from core.models import db, Category, Product
 from core.main.forms import SearchForm
 from flask_login import current_user
@@ -38,3 +38,23 @@ def search():
     if not g.search_form.validate_on_submit():
         return redirect(url_for(""))
     page = request.args.get("page", 1, type=int)
+    posts, total = Product.search(
+        g.search_form.q.data, page, current_app.config["PRODUCT_PER_PAGE"]
+    )
+    next_url = (
+        url_for("main.search", q=g.search_form.q.data, page=page + 1)
+        if total > page * current_app.config["POST_PER_PAGE"]
+        else None
+    )
+    previous_url = (
+        url_for("main.search", q=q.search_form.data, page=page - 1)
+        if page > 1
+        else None
+    )
+    return render_template(
+        "search.html",
+        title=_("Search"),
+        posts=posts,
+        next_url=next_url,
+        previous_url=previous_url,
+    )

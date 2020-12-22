@@ -1,6 +1,6 @@
 from core import login_manager
 from werkzeug.security import check_password_hash
-from flask import current_app, flash, redirect, url_for
+from flask import current_app, flash, redirect, url_for, jsonify
 from flask_login import UserMixin
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from datetime import datetime
@@ -16,12 +16,14 @@ class SearchableMixin:
 
     @classmethod
     def search(cls, expression, page, per_page):
+        """Search in database."""
         ids, total = query_index(cls.__tablename__, expression, page, per_page)
         if total == 0:
             return cls.query.filter_by(id=0), 0
         when = []
         for i in range(len(ids)):
             when.append((ids[i], i))
+
         return (
             cls.query.filter(cls.id.in_(ids)).order_by(db.case(when, value=cls.id)),
             total,
@@ -29,6 +31,7 @@ class SearchableMixin:
 
     @classmethod
     def before_commit(cls, session):
+        """Before commit."""
         session._changes = {
             "add": list(session.new),
             "update": list(session.dirty),
@@ -37,6 +40,7 @@ class SearchableMixin:
 
     @classmethod
     def after_commit(cls, session):
+        """After commit."""
         for obj in session._changes["add"]:
             if isinstance(obj, SearchableMixin):
                 add_to_index(obj.__tablename__, obj)
@@ -50,6 +54,7 @@ class SearchableMixin:
 
     @classmethod
     def reindex(cls):
+        """Re-index."""
         for obj in cls.query:
             add_to_index(cls.__tablename__, obj)
 
@@ -69,6 +74,7 @@ def load_user(user_id):
     Flask-Login retrieves the ID of the user from the session,
     and then loads that user into memory.
     """
+
     return User.query.get(user_id)
 
 
@@ -117,16 +123,15 @@ class User(db.Model, UserMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     user_name = db.Column(db.String(20), nullable=False, unique=True)
-    first_name = db.Column(db.String(40))
-    last_name = db.Column(db.String(40))
+    full_name = db.Column(db.String(60))
     password = db.Column(db.String(200), nullable=False)
-    address = db.Column(db.String(200))
-    city = db.Column(db.String(20))
-    state = db.Column(db.String(20))
-    country = db.Column(db.String(20))
-    zipcode = db.Column(db.String(20))
+    address = db.Column(db.String(200), default="")
+    city = db.Column(db.String(20), default="")
+    state = db.Column(db.String(20), default="")
+    country = db.Column(db.String(20), default="")
+    zipcode = db.Column(db.String(20), default="")
     email = db.Column(db.String(100), nullable=False)
-    phone = db.Column(db.String(20))
+    phone = db.Column(db.String(20), nullable=False, unique=True)
     profile_picture = db.Column(db.String(200), nullable=False, default="default.jpg")
     is_superuser = db.Column(db.Boolean, default=False)
     roles = db.relationship(
@@ -144,6 +149,10 @@ class User(db.Model, UserMixin):
 
     def __str__(self):
         return f"User: {self.user_name}"
+
+    @property
+    def serialize(self):
+        return jsonify({"name": self.first_name + self.last_name})
 
     def get_id(self):
         """Method to get user_id to pass into login_user(). Must be a function"""
@@ -209,7 +218,8 @@ class Product(SearchableMixin, db.Model):
     product_review = db.Column(db.String(100), nullable=True)
     product_image = db.Column(db.String(100), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
-    # ForeignKey with Category table (many-to-one relationship)
+    # many-to-one relationship
+    # ForeignKey with Category table
     # category_id = db.Column(
     #    db.Integer, db.ForeignKey("category.category_id"), nullable=False
     # )
@@ -299,6 +309,7 @@ class OrderedProduct(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     order_id = db.Column(db.Integer, db.ForeignKey("order.id"), nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey("product.id"), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey("product.id"), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):
@@ -318,6 +329,7 @@ class SaleTransaction(db.Model):
     amount = db.Column(db.DECIMAL, nullable=False)
     cc_number = db.Column(db.String(50), nullable=False)
     cc_type = db.Column(db.String(50), nullable=False)
+    response = db.Column(db.String(50), nullable=False)
     response = db.Column(db.String(50), nullable=False)
 
     def __repr__(self):

@@ -44,11 +44,15 @@ class Config:
 
 class ProductionConfig(Config):
     DEBUG = False
+    SECRET_KEY = secrets.token_hex(8)
     SQLALCHEMY_TRACK_MODIFICATION = False
 
 
 class TestingConfig(Config):
     TESTING = True
-    SECRET_KEY = "bad_key"
+    SECRET_KEY = "im_bad_key"
 
 
+class StagingConfig(Config):
+    DEBUG = False
+    SECRET_KEY = secrets.token_hex(8)

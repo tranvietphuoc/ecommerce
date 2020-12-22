@@ -13,15 +13,10 @@ class RegistrationForm(FlaskForm):
         validators=[DataRequired()],
         render_kw={"placeholder": "User name"},
     )
-    first_name = StringField(
-        "First name:",
+    full_name = StringField(
+        "Full name:",
         validators=[DataRequired()],
-        render_kw={"placeholder": "First name"},
-    )
-    last_name = StringField(
-        "Last name:",
-        validators=[DataRequired()],
-        render_kw={"placeholder": "Last name"},
+        render_kw={"placeholder": "Full name"},
     )
     email = StringField(
         "Email:",
@@ -35,22 +30,6 @@ class RegistrationForm(FlaskForm):
         "Confirm password:",
         render_kw={"placeholder": "Confirm password"},
         validators=[DataRequired(), EqualTo("password")],
-    )
-    address = StringField(
-        "Address:", validators=[DataRequired()], render_kw={"placeholder": "Address"}
-    )
-    country = StringField(
-        "Country:", validators=[DataRequired()], render_kw={"placeholder": "Country"}
-    )
-
-    city = StringField(
-        "City:", validators=[DataRequired()], render_kw={"placeholder": "City"}
-    )
-    state = StringField(
-        "State:", validators=[DataRequired()], render_kw={"placeholder": "State"}
-    )
-    zipcode = StringField(
-        "Zip code:", validators=[DataRequired()], render_kw={"placeholder": "Zip code"}
     )
     phone = StringField(
         "Phone:",
@@ -92,8 +71,7 @@ class LoginForm(FlaskForm):
 class UpdateForm(FlaskForm):
     """Need to input password to update, another fields is not needed"""
 
-    first_name = StringField("First name:", render_kw={"placeholder": "First name"})
-    last_name = StringField("Last name:", render_kw={"placeholder": "Last name"})
+    full_name = StringField("Full name:", render_kw={"placeholder": "Full name"})
     email = StringField("Email:", render_kw={"placeholder": "Email"})
     profile_picture = FileField(
         "Update profile picture:", validators=[FileAllowed(["jpg", "png", "jpeg"])]

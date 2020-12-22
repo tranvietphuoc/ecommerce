@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask
 from flask_admin import Admin
 from flask_login import LoginManager
 from flask_mail import Mail
@@ -100,13 +100,15 @@ def create_app(config_class=Config):
     @click.argument("superuser")
     def create_superuser(superuser):
         """Create superuser with CLI interface."""
-        name = prompt("Enter superuser name. Default", default="admin")
-        email = prompt("Enter superuser email", default="admin@email.com")
+        name = prompt("Enter superuser name.", default="admin")
+        email = prompt("Enter superuser email.", default="admin@email.com")
+        phone_number = prompt("Enter superuser phone number.", default="0111111111")
         password = prompt_pass("Enter pasword")
         if not User.query.filter_by(user_name=name).first():
             user = User(
                 user_name=name,
                 email=email,
+                phone=phone_number,
                 password=generate_password_hash(password),
                 is_superuser=True,
             )
@@ -124,7 +126,7 @@ def create_app(config_class=Config):
     @app.cli.command("dropdb")
     def drop_db():
         """Drop database."""
-        if prompt_bool("Are you sure to drop database"):
+        if prompt_bool("Are you sure to drop database? [y/N]:"):
             db.drop_all()
 
     return app

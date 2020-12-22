@@ -16,6 +16,7 @@ from core.products.forms import (
     UpdateProductForm,
 )
 from core.products.utils import save_product_image
+from flask_babel import _
 
 
 products = Blueprint("products", __name__)
@@ -70,11 +71,11 @@ def add_product():
         for category in added_categories:
             category.products.append(product)
         db.session.commit()
-        flash(f"Add product success.", "success")
+        flash(_(f"Add product {product.product_name} success."), "success")
         return redirect(url_for("products.add_product"))
     return render_template(
         "product/add_product.html",
-        title="Add Product",
+        title=_("Add Product"),
         form=form,
         categories=categories_query,
     )
@@ -122,7 +123,7 @@ def update_product(product_id):
             # add new product to each new category
             category.products.append(product)
         db.session.commit()
-        flash(f"Product {product.product_name} has been updated.", "success")
+        flash(_(f"Product {product.product_name} has been updated."), "success")
         return redirect(url_for("main.home"))
     elif request.method == "GET":
         form.product_name.data = product.product_name
@@ -135,7 +136,7 @@ def update_product(product_id):
         form.categories.data = product.categories
         return render_template(
             "product/update_product.html",
-            title=f"Update product {product.product_name}",
+            title=_(f"Update product {product.product_name}"),
             form=form,
             product_id=product_id,
             categories=categories_query,
@@ -150,7 +151,7 @@ def detail_product(product_id):
     categories = db.session.query(Category).all()
     return render_template(
         "product/detail_product.html",
-        title=f"Product {product.product_name} detail",
+        title=_(f"Product {product.product_name} detail"),
         product=product,
         categories=categories,
     )
@@ -167,7 +168,7 @@ def delete_product(product_id):
     product = db.session.query(Product).get_or_404(product_id)
     db.session.delete(product)
     db.session.commit()
-    flash(f"This product {product_id} has been deleted.", "success")
+    flash(_(f"This product {product_id} has been deleted."), "success")
     return redirect(url_for("main.home"))
 
 
@@ -186,11 +187,11 @@ def add_category():
         category_name = form.category_name.data
         db.session.add(Category(category_name=category_name))
         db.session.commit()
-        flash(f"Add category success.", "success")
+        flash(_(f"Add category {category_name} success."), "success")
         return redirect(url_for("products.add_category"))
     return render_template(
         "product/add_category.html",
-        title="Add Category",
+        title=_("Add Category"),
         form=form,
         categories=categories,
     )
@@ -212,13 +213,13 @@ def update_category(category_id):
         category.category_name = form.category_name.data
         category.products.append()
         db.session.commit()
-        flash(f"This category has been updated.", "success")
+        flash(_(f"Category {category.category_name} has been updated."), "success")
         return redirect(url_for("products.get_category"))
     elif request.method == "GET":
         form.category_name.data = category.category_name
         return render_template(
             "product/update_category.html",
-            title=f"Update category {category.category_name}",
+            title=_(f"Update category {category.category_name}"),
             form=form,
             categories=categories,
         )
@@ -233,7 +234,7 @@ def detail_category(category_id):
     categories = db.session.query(Category).all()
     return render_template(
         "product/detail_category.html",
-        title=f"Category {result.category_name} detail",
+        title=_(f"Category {result.category_name} detail"),
         result=result,
         categories=categories,
     )
@@ -244,7 +245,7 @@ def get_categories():
     """Get all categories. And show the informations of them."""
     categories = db.session.query(Category).all()
     return render_template(
-        "product/categories.html", title="List categories", categories=categories,
+        "product/categories.html", title=_("List categories"), categories=categories,
     )
 
 
@@ -260,5 +261,5 @@ def delete_category(category_id):
     category = db.session.query(Category).get_or_404(category_id)
     db.session.delete(category)
     db.session.commit()
-    flash(f"The category {category_id} has been deleted.", "success")
+    flash(_(f"The category {category_id} has been deleted."), "success")
     return redirect(url_for("main.home"))

@@ -37,6 +37,7 @@ class CustomServer(Server):
 manager = Manager(create_app)
 manager.add_command("db", MigrateCommand)
 manager.add_command("shell", Shell(make_context=_make_context))
+# manager.add_command("runserver", CustomServer())
 manager.add_command("runserver", CustomServer())
 
 
@@ -51,19 +52,20 @@ def dropdb():
 @manager.option("-s", "--supseruser", dest="superuser")
 def create(superuser):
     """Create superuser with CLI interface."""
-    name = prompt("Enter superuser name. Default", default="admin")
-    email = prompt("Enter superuser email", default="admin@email.com")
+    name = prompt("Enter superuser name.", default="admin")
+    email = prompt("Enter superuser email.", default="admin@email.com")
+    phone_number = prompt("Enter superuser phone number.", default="0111111111")
     password = prompt_pass("Enter password")
     if not User.query.filter_by(user_name=name).first():
         user = User(
             user_name=name,
             email=email,
+            phone=phone_number,
             password=generate_password_hash(password),
             is_superuser=True,
         )
-        db.session.add(user)
-        superuser_role = db.session.query(
-            Role).filter_by(role_name="superuser").first()
+        db.session.add(user)  # add admin user to database
+        superuser_role = db.session.query(Role).filter_by(role_name="superuser").first()
         superuser_role.users.append(user)
         db.session.commit()
         print(f"User {name} has been created.")
@@ -73,5 +75,3 @@ def create(superuser):
 
 if __name__ == "__main__":
     manager.run()
-
-

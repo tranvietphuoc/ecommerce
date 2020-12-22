@@ -12,13 +12,12 @@
     <p class="text-secondary" style="margin-left: 5px; margin-top: 5px;">{{ current_user.email }}</p>
   </div>
 </div>
-<div class="content-form col-sm-8">
+<div class="content-form">
   <form action="{{ url_for('users.about') }}" class="needs-validation" method="POST" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
     <fieldset class="form-group">
-      <legend class="border-auto mb-4">Account update</legend>
-      {{ render_field(form.first_name) }}
-      {{ render_field(form.last_name) }}
+      <legend class="border-auto">Account update</legend>
+      {{ render_field(form.full_name) }}
       {{ render_field(form.email) }}
       {{ render_field(form.old_password) }}
       {{ render_field(form.new_password) }}

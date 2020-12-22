@@ -10,6 +10,7 @@ from core.users.forms import (
 from werkzeug.security import generate_password_hash
 from core.models import User, db, Role, Category
 from core.users.utils import save_picture, send_reset_token
+from flask_babel import _
 
 
 users = Blueprint("users", __name__)
@@ -27,15 +28,9 @@ def register():
         hashed_password = generate_password_hash(form.password.data)
         user = User(
             user_name=form.user_name.data,
-            first_name=form.first_name.data,
-            last_name=form.last_name.data,
-            country=form.country.data,
+            full_name=form.full_name.data,
             email=form.email.data,
             password=hashed_password,
-            address=form.address.data,
-            city=form.city.data,
-            state=form.state.data,
-            zipcode=form.zipcode.data,
             phone=form.phone.data,
         )
         db.session.add(user)
@@ -45,11 +40,12 @@ def register():
         user_role.users.append(user)
         db.session.commit()
         flash(
-            f"Your account have been created. You are now able to log in.", "success",
+            _(f"Your account have been created. You are now able to log in."),
+            "success",
         )
         return redirect(url_for("users.login"))
     return render_template(
-        "user/register.html", title="Register", form=form, categories=categories
+        "user/register.html", title=_("Register"), form=form, categories=categories
     )
 
 
@@ -69,9 +65,11 @@ def login():
             next_page = request.args.get("next")
             return redirect(next_page) if next_page else redirect(url_for("main.home"))
         else:
-            flash(f"Login unsuccessful. Please check email and password", "danger")
+            flash(
+                _("Login unsuccessful. Please check your email and password"), "danger"
+            )
     return render_template(
-        "user/login.html", title="Sign in", form=form, categories=categories
+        "user/login.html", title=_("Sign in"), form=form, categories=categories
     )
 
 
@@ -111,14 +109,14 @@ def about():
         if form.phone.data:
             current_user.phone = form.phone.data
         db.session.commit()
-        flash(f"Your account have been updated.", "success")
+        flash(_("Your account have been updated."), "success")
         return redirect(url_for("users.about"))
     elif request.method == "GET":
         form.email.data = current_user.email
     picture = url_for("static", filename="assets/users/" + current_user.profile_picture)
     return render_template(
         "user/about.html",
-        title="About",
+        title=_("About"),
         picture=picture,
         form=form,
         categories=categories,
@@ -136,11 +134,11 @@ def send_reset():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         send_reset_token(user)
-        flash(f"An email sent with instructions to reset your password.", "info")
+        flash(_("An email sent with instructions to reset your password."), "info")
         redirect(url_for("users.login"))
     return render_template(
         "user/reset_request.html",
-        title="Send reset token",
+        title=_("Send reset token"),
         form=form,
         categories=categories,
     )
@@ -153,7 +151,7 @@ def reset_password(token):
         return redirect(url_for("main.home"))
     user = User.verify_reset_token(token)  # verify reset token
     if not user:
-        flash(f"This token is invalid.", "warning")
+        flash(_("This token is invalid."), "warning")
         return redirect(url_for("users.send_reset"))
 
     categories = db.session.query(Category).all()
@@ -162,12 +160,12 @@ def reset_password(token):
         user.password = generate_password_hash(form.password.data)
         db.session.commit()
         flash(
-            f"Your password have been updated. You are now able to login.", "success",
+            _("Your password have been updated. You are now able to login."), "success",
         )
         return redirect(url_for("users.login"))
     return render_template(
         "user/reset_token.html",
-        title="Reset password",
+        title=_("Reset password"),
         form=form,
         categories=categories,
     )
