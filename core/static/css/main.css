@@ -1,5 +1,5 @@
 body {
-	font-family: "Open Sans", sans-serif;
+	font-family: sans-serif;
 	background: white;
 	padding: auto;
 	margin: auto;
@@ -40,6 +40,26 @@ body {
 	width: 100%;
 	display: block;
 	padding: 10px;
+}
+
+.form-btn:hover {
+	background-color: slateblue;
+}
+
+.search-form {
+	display: flex;
+	flex-direction: left;
+	padding: 0.5em;
+}
+
+.search-input {
+	border: none;
+}
+
+form .search-btn {
+	border: none;
+	cursor: pointer;
+	transition: all 0.3s ease;
 }
 
 .number {

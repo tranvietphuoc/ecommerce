@@ -206,7 +206,7 @@ class Product(SearchableMixin, db.Model):
 
     __tablename__ = "product"
     __table_args__ = {"extend_existing": True}
-    __searchable__ = ["body"]
+    __searchable__ = ["product_name"]
 
     id = db.Column(db.Integer, primary_key=True)
     sku = db.Column(db.String(20), nullable=False)
@@ -246,7 +246,7 @@ class Category(SearchableMixin, db.Model):
 
     __tablename__ = "category"
     __table_args__ = {"extend_existing": True}
-    __searchable__ = ["body"]
+    __searchable__ = ["category_name"]
 
     id = db.Column(db.Integer, primary_key=True)
     category_name = db.Column(db.String(100), nullable=False)
