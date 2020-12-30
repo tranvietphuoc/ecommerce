@@ -1,6 +1,6 @@
 from flask_admin.contrib.sqla import ModelView
-from flask_admin import expose
-from flask import session, redirect, url_for, request, abort
+from flask_admin import BaseView, expose
+from flask import session, redirect, url_for, request, abort, render_template
 from flask_login import current_user
 
 
@@ -32,4 +32,16 @@ class AdminView(ModelView):
                     abort(403)
                 else:
                     # login
+                    return redirect(url_for("users.login", next=request.url))
+
+
+class AdminUserView(AdminView):
+    def _handle_view(self, name, **kwargs):
+        if current_user.has_role("superuser"):
+            can_export = True
+        else:
+            if not self.is_accessible():
+                if current_user.is_authenticated:
+                    abort(403)
+                else:
                     return redirect(url_for("users.login", next=request.url))

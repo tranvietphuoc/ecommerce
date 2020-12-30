@@ -35,7 +35,16 @@ def create_app(config_class=Config):
 
     # init all extensions with flask app
     # first import from models
-    from core.models import db, User, Product, Category, Order, Role
+    from core.models import (
+        db,
+        User,
+        Product,
+        Category,
+        Order,
+        Role,
+        SaleTransaction,
+        OrderedProduct,
+    )
 
     # init db
     db.init_app(app)
@@ -61,7 +70,8 @@ def create_app(config_class=Config):
     admin.add_view(AdminView(Product, db.session))
     admin.add_view(AdminView(Category, db.session))
     admin.add_view(AdminView(Order, db.session))
-    admin.add_view(AdminView(Role, db.session))
+    admin.add_view(AdminView(OrderedProduct, db.session))
+    admin.add_view(AdminView(SaleTransaction, db.session))
 
     # initialize migrating database
     migrate = Migrate()
