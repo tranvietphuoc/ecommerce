@@ -9,3 +9,4 @@ ADD . /app
 WORKDIR /app
 
 RUN run python run.sh
+

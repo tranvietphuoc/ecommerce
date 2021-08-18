@@ -1,6 +1,6 @@
-from core import create_app
-from core import models
-from core.models import db, Role, Category, User
+from ecommerce import create_app
+from ecommerce import models
+from ecommerce.models import db, Role, Category, User
 from flask_script import (
     Manager,
     Shell,
@@ -18,6 +18,7 @@ This module is used if you want to run app like django
 """
 
 
+
 def _make_context():
     return dict(app=create_app(), db=db, models=models, User=User, Category=Category)
 
@@ -28,6 +29,7 @@ class CustomServer(Server):
             query = db.session.query(Role).all()
             if not query:
                 db.session.add(Role(role_name="superuser"))
+                db.session.add(Role(role_name="admin"))
                 db.session.add(Role(role_name="user"))
                 db.session.commit()
                 print("Roles have been created.")
@@ -52,8 +54,8 @@ def dropdb():
 @manager.option("-s", "--supseruser", dest="superuser")
 def create(superuser):
     """Create superuser with CLI interface."""
-    name = prompt("Enter superuser name.", default="admin")
-    email = prompt("Enter superuser email.", default="admin@email.com")
+    name = prompt("Enter superuser name.", default="superuser")
+    email = prompt("Enter superuser email.", default="superuser@email.com")
     phone_number = prompt("Enter superuser phone number.", default="0111111111")
     password = prompt_pass("Enter password")
     if not User.query.filter_by(user_name=name).first():
@@ -75,3 +77,4 @@ def create(superuser):
 
 if __name__ == "__main__":
     manager.run()
+

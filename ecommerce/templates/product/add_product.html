@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import render_field, render_select_field, render_file_field, render_button, render_categories %}
+{% block css %}
+<link
+	href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css"
+	rel="stylesheet"
+/>
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block categories %}
+{{ render_categories(categories) }}
+{% endblock %}
+{%block content %}
+<div class="content-form col-sm-8">
+	<form class="needs-validation" method="POST" enctype="multipart/form-data">
+		{{ form.hidden_tag() }}
+		<fieldset class="form-group">
+			<legend class="border-auto mb-4">Add Product</legend>
+			{{ render_field(form.product_name) }} {{ render_field(form.sku) }} {{
+			render_field(form.product_price) }} {{
+			render_field(form.product_description) }} {{
+			render_field(form.product_quantity) }} {{
+			render_select_field(form.categories) }} {{
+			render_file_field(form.product_image) }}
+		</fieldset>
+		{{ render_button(form.submit) }}
+	</form>
+</div>
+{% endblock %}
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+<!-- (Optional) Latest compiled and minified JavaScript translation files -->
+<!--<script src="{{ url_for('static', filename='src/add_product.js') }}"></script>-->
+<script>
+	// To style all selects
+	// $('select').selectpicker();
+	$(document).ready(function () {
+		$(".select-categories").select2({
+			placeholder: "Select...",
+		});
+	});
+</script>
+{% endblock %}

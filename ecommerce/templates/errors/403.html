@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import render_categories %}
+{% block categories %}
+  {{ render_categories(categories) }}
+{% endblock %}
+{% block content %}
+<div class="content-form">
+  <h1>You don't have permission to do that (403).</h1>
+  <p>Please check your <a href="{{ url_for('user.login') }}">account again.</a>.</p>
+</div>
+{% endblock %}
