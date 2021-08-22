@@ -11,8 +11,6 @@ from ecommerce.models import db, Product, Category
 from flask_login import current_user
 from ecommerce.products.forms import (
     AddProductForm,
-    AddCategoryForm,
-    UpdateCategoryForm,
     UpdateProductForm,
 )
 from ecommerce.utils import save_product_image
@@ -172,101 +170,4 @@ def delete_product(product_id):
     db.session.delete(product)
     db.session.commit()
     flash(_(f"This product {product_id} has been deleted."), "success")
-    return redirect(url_for("main.home"))
-
-
-@products.route("/admin/categories/new", methods=("GET", "POST"))
-def add_category():
-    """Add new category. Only superuser can do that."""
-
-    if not current_user.is_active or not current_user.is_authenticated:
-        abort(404)
-    else:
-        if not current_user.has_role("admin", "superuser"):
-            abort(403)
-    categories = db.session.query(Category).all()
-    form = AddCategoryForm()
-    if form.validate_on_submit():
-        category_name = form.category_name.data
-        db.session.add(Category(category_name=category_name))
-        db.session.commit()
-        flash(_(f"Add category {category_name} success."), "success")
-        return redirect(url_for("products.add_category"))
-    return render_template(
-        "product/add_category.html",
-        title=_("Add Category"),
-        form=form,
-        categories=categories,
-    )
-
-
-@products.route("/admin/categories/<int:category_id>/update", methods=("GET", "POST"))
-def update_category(category_id):
-    """Update informations of category has category_id. Only for superuser."""
-
-    if not current_user.is_active or not current_user.is_authenticated:
-        abort(404)
-    else:
-        if not current_user.has_role("admin", "superuser"):
-            abort(403)
-    categories = db.session.query(Category).all()
-    category = db.session.query(Category).get_or_404(category_id)
-    form = UpdateCategoryForm()
-    if form.validate_on_submit():
-        category.category_name = form.category_name.data
-        category.products.append()
-        db.session.commit()
-        flash(_(f"Category {category.category_name} has been updated."), "success")
-        return redirect(url_for("products.get_category"))
-    elif request.method == "GET":
-        form.category_name.data = category.category_name
-        return render_template(
-            "product/update_category.html",
-            title=_(f"Update category {category.category_name}"),
-            form=form,
-            categories=categories,
-        )
-    return redirect(url_for("products.get_categories"))
-
-
-@products.route("/categories/<int:category_id>/detail", methods=("GET", "POST"))
-def detail_category(category_id):
-    """Get details of category with category_id (display category and all products of it)"""
-
-    # need to join between Product and Category table
-    result = db.session.query(Category).get_or_404(category_id)
-    categories = db.session.query(Category).all()
-    return render_template(
-        "product/detail_category.html",
-        title=_(f"Category {result.category_name} detail"),
-        result=result,
-        categories=categories,
-    )
-
-
-@products.route("/categories/list", methods=("GET", "POST"))
-def get_categories():
-    """Get all categories. And show the informations of them."""
-
-    categories = db.session.query(Category).all()
-    return render_template(
-        "product/categories.html",
-        title=_("List categories"),
-        categories=categories,
-    )
-
-
-@products.route("/admin/categories/<int:category_id>/delete", methods=("GET", "POST"))
-def delete_category(category_id):
-    """Delete particular category with category_id. Only superuser can delete."""
-
-    if not current_user.is_active or not current_user.is_authenticated:
-        abort(404)
-    else:
-        if not current_user.has_role("admin", "superuser"):
-            abort(403)
-    category = db.session.query(Category).get_or_404(category_id)
-    db.session.delete(category)
-    db.session.commit()
-    flash(_(f"The category {category_id} has been deleted."), "success")
     return redirect(url_for("main.home"))

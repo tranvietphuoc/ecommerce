@@ -71,7 +71,7 @@
 {% macro render_categories(categories) %}
 {% for category in categories %}
   <a
-	  href="{{ url_for('products.detail_category', category_id=category.id) }}"
+	  href="{{ url_for('categories.detail_category', category_id=category.id) }}"
 	  class="dropdown-item"
   >
 	{{ category.category_name }}

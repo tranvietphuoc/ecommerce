@@ -69,9 +69,9 @@ def create_app(config_class=Config):
     from ecommerce.users.routes import users
     from ecommerce.errors.routes import errors
     from ecommerce.products.routes import products
+    from ecommerce.categories.routes import categories
     from ecommerce.carts.routes import carts
     from ecommerce.main.routes import main
-
 
     # then register these blueprints here
     app.register_blueprint(users)
@@ -79,7 +79,7 @@ def create_app(config_class=Config):
     app.register_blueprint(products)
     app.register_blueprint(carts)
     app.register_blueprint(main)
-
+    app.register_blueprint(categories)
 
     # apis
     from ecommerce.api.views.products import pro
