@@ -1,3 +1,7 @@
+"""
+This package contain all models of the app and more add-on includes
+"""
+
 from flask import url_for, flash, redirect
 from ecommerce.extensions import login_manager
 from ecommerce.search import SearchableMixin
