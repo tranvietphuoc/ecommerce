@@ -11,7 +11,7 @@ from ecommerce.extensions import db, login_manager
 login_manager.login_view = "users.login"  # use blueprint
 login_manager.login_message_category = "info"
 
-# search config
+# elasticsearch config
 db.event.listen(db.session, "before_commit", SearchableMixin.before_commit)
 db.event.listen(db.session, "after_commit", SearchableMixin.after_commit)
 
@@ -49,13 +49,6 @@ users_roles = db.Table(
     db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
     db.Column("role_id", db.Integer, db.ForeignKey("role.id"), primary_key=True),
 )
-
-
-# class RolesUsers(db.Model):
-#     __tablename__ = 'roles_users'
-#     id = db.Column(db.Integer, primary_key=True)
-#     user_id = db.Column('user_id', db.Integer, db.ForeignKey('user.id'))
-#     role_id = db.Column('role_id', db.Integer, db.ForeignKey('role.id'))
 
 
 class Role(db.Model):
