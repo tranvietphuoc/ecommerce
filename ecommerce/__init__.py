@@ -25,14 +25,15 @@ def create_app(config_class=Config):
     # init all extensions with flask app
     # first import from models
     from ecommerce.models import (
-        db,
-        User,
-        Product,
-        Category,
-        Order,
-        Role,
-        SaleTransaction,
-        OrderedProduct,
+            db,
+            User,
+            Role,
+            Category,
+            Product,
+            Cart,
+            Order,
+            OrderedProduct,
+            SaleTransaction
     )
 
     # init db
@@ -56,6 +57,7 @@ def create_app(config_class=Config):
     admin.add_view(ModelView(User, db.session))
     admin.add_view(ModelView(Product, db.session))
     admin.add_view(ModelView(Category, db.session))
+    admin.add_view(ModelView(Cart, db.session))
     admin.add_view(ModelView(Order, db.session))
     admin.add_view(ModelView(OrderedProduct, db.session))
     admin.add_view(ModelView(SaleTransaction, db.session))
@@ -65,17 +67,19 @@ def create_app(config_class=Config):
 
     # import all routes of blueprints here
     from ecommerce.users.routes import users
-    from ecommerce.main.routes import main
     from ecommerce.errors.routes import errors
     from ecommerce.products.routes import products
-    from ecommerce.cart.routes import cart
+    from ecommerce.carts.routes import carts
+    from ecommerce.main.routes import main
+
 
     # then register these blueprints here
     app.register_blueprint(users)
-    app.register_blueprint(main)
     app.register_blueprint(errors)
     app.register_blueprint(products)
-    app.register_blueprint(cart)
+    app.register_blueprint(carts)
+    app.register_blueprint(main)
+
 
     # apis
     from ecommerce.api.views.products import pro
