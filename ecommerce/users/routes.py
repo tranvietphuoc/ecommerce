@@ -17,7 +17,7 @@ from ecommerce.users.forms import (
     ResetPasswordForm,
 )
 from ecommerce.models import User, db, Role, Category
-from ecommerce.users.utils import save_picture, send_reset_token
+from ecommerce.utils import save_picture, send_reset_token
 from flask_babel import _
 
 

@@ -15,7 +15,7 @@ from ecommerce.products.forms import (
     UpdateCategoryForm,
     UpdateProductForm,
 )
-from ecommerce.products.utils import save_product_image
+from ecommerce.utils import save_product_image
 from flask_babel import _
 
 
