@@ -1,4 +1,4 @@
-from flask import Flask, request, current_app
+from flask import Flask
 from flask_admin import Admin
 from flask_script import prompt_pass, prompt_bool, prompt
 import click
