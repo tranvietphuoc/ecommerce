@@ -68,13 +68,13 @@
 {% endmacro %}
 
 {# render categories #}
-{% macro render_categories(categories) %}
-{% for category in categories %}
+{% macro render_categories(cates) %}
+{% for cate in cates %}
   <a
-	  href="{{ url_for('categories.detail_category', category_id=category.id) }}"
+	  href="{{ url_for('categories.detail_category', category_id=cate.id) }}"
 	  class="dropdown-item"
   >
-	{{ category.category_name }}
+	{{ cate.category_name }}
   </a>
 {% endfor %}
 {% endmacro %}

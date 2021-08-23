@@ -297,17 +297,6 @@ blinker = "*"
 Flask = "*"
 
 [[package]]
-name = "flask-script"
-version = "2.0.6"
-description = "Scripting support for Flask"
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-Flask = "*"
-
-[[package]]
 name = "flask-security"
 version = "3.0.0"
 description = "Simple security for Flask apps."
@@ -800,7 +789,7 @@ locale = ["Babel (>=1.3)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "bdd5dba5a9d5b949b5c6d3d77b237ba329bba47d98348c596f09175a3339f8df"
+content-hash = "a06d57ffaee9364cfa4bbc85c787c21d184358554955da98316a6849b6abb8b2"
 
 [metadata.files]
 alembic = [
@@ -889,9 +878,6 @@ flask-migrate = [
 ]
 flask-principal = [
     {file = "Flask-Principal-0.4.0.tar.gz", hash = "sha256:f5d6134b5caebfdbb86f32d56d18ee44b080876a27269560a96ea35f75c99453"},
-]
-flask-script = [
-    {file = "Flask-Script-2.0.6.tar.gz", hash = "sha256:6425963d91054cfcc185807141c7314a9c5ad46325911bd24dcb489bd0161c65"},
 ]
 flask-security = [
     {file = "Flask-Security-3.0.0.tar.gz", hash = "sha256:d61daa5f5a48f89f30f50555872bdf581b2c65804668b0313345cd7beff26432"},

@@ -28,7 +28,7 @@ def add_category():
     else:
         if not current_user.has_role("admin", "superuser"):
             abort(403)
-    categories = db.session.query(Category).all()
+    cates = db.session.query(Category).all()
     form = AddCategoryForm()
     if form.validate_on_submit():
         category_name = form.category_name.data
@@ -40,7 +40,7 @@ def add_category():
         "category/add_category.html",
         title=_("Add Category"),
         form=form,
-        categories=categories,
+        cates=cates,
     )
 
 
@@ -96,7 +96,7 @@ def get_categories():
     return render_template(
         "category/get_categories.html",
         title=_("List categories"),
-        categories=cates,
+        cates=cates,
     )
 
 

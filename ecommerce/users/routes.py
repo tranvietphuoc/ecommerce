@@ -100,8 +100,8 @@ def about():
                 form.profile_picture.data, current_user.user_name
             )
             current_user.profile_picture = profile_picture
-        if form.username.data:
-            current_user.user_name = form.username.data
+        if form.user_name.data:
+            current_user.user_name = form.user_name.data
         if form.email.data:
             current_user.email = form.email.data
         if form.new_password.data:

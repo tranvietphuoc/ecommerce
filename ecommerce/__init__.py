@@ -1,12 +1,21 @@
 from flask import Flask
 from flask_admin import Admin
-from flask_script import prompt_pass, prompt_bool, prompt
 import click
 from werkzeug.security import generate_password_hash
 from elasticsearch import Elasticsearch
 from ecommerce.config import Config
 from ecommerce.auth.views import AdminView, ModelView
 from ecommerce.extensions import mail, babel, migrate, login_manager
+from ecommerce.models import *
+# import all routes of blueprints here
+from ecommerce.users.routes import users
+from ecommerce.errors.routes import errors
+from ecommerce.products.routes import products
+from ecommerce.categories.routes import categories
+from ecommerce.carts.routes import carts
+from ecommerce.main.routes import main
+# apis
+from ecommerce.api.views.products import pro
 
 
 def create_app(config_class=Config):
@@ -20,20 +29,6 @@ def create_app(config_class=Config):
         Elasticsearch([app.config["ELASTICSEARCH_URL"]])
         if app.config["ELASTICSEARCH_URL"]
         else None
-    )
-
-    # init all extensions with flask app
-    # first import from models
-    from ecommerce.models import (
-            db,
-            User,
-            Role,
-            Category,
-            Product,
-            Cart,
-            Order,
-            OrderedProduct,
-            SaleTransaction
     )
 
     # init db
@@ -65,14 +60,6 @@ def create_app(config_class=Config):
     # initialize migrating database
     migrate.init_app(app, db)
 
-    # import all routes of blueprints here
-    from ecommerce.users.routes import users
-    from ecommerce.errors.routes import errors
-    from ecommerce.products.routes import products
-    from ecommerce.categories.routes import categories
-    from ecommerce.carts.routes import carts
-    from ecommerce.main.routes import main
-
     # then register these blueprints here
     app.register_blueprint(users)
     app.register_blueprint(errors)
@@ -80,9 +67,6 @@ def create_app(config_class=Config):
     app.register_blueprint(carts)
     app.register_blueprint(main)
     app.register_blueprint(categories)
-
-    # apis
-    from ecommerce.api.views.products import pro
 
     app.register_blueprint(pro)
 
@@ -109,10 +93,10 @@ def create_app(config_class=Config):
     def create_superuser(superuser):
         """Create superuser with CLI interface."""
 
-        name = prompt("Enter superuser name.", default="superuser")
-        email = prompt("Enter superuser email.", default="superuser@email.com")
-        phone_number = prompt("Enter superuser phone number.", default="0111111111")
-        password = prompt_pass("Enter pasword")
+        name = click.prompt("Enter superuser name.",type=str, default="superuser")
+        email = click.prompt("Enter superuser email.", default="superuser@email.com")
+        phone_number = click.prompt("Enter superuser phone number.", default="0111111111")
+        password = click.prompt("Enter pasword.", hide_input=True)
         if not User.query.filter_by(user_name=name).first():
             user = User(
                 user_name=name,
@@ -136,7 +120,7 @@ def create_app(config_class=Config):
     def drop_db():
         """Drop database."""
 
-        if prompt_bool("Are you sure to drop database? [y/N]:"):
+        if click.confirm("Are you sure to drop database?"):
             db.drop_all()
 
     # asgi_app = WsgiToAsgi(app)
