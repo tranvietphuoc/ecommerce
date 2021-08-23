@@ -1,3 +1,8 @@
+"""
+This module is used if you want to run app like django.
+But you have to install flask_script first.
+"""
+
 from ecommerce import create_app
 from ecommerce import models
 from ecommerce.models import db, Role, Category, User
@@ -11,12 +16,6 @@ from flask_script import (
 )
 from flask_migrate import MigrateCommand
 from werkzeug.security import generate_password_hash
-
-
-"""
-This module is used if you want to run app like django
-"""
-
 
 
 def _make_context():

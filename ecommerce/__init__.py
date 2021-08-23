@@ -14,7 +14,7 @@ from ecommerce.products.routes import products
 from ecommerce.categories.routes import categories
 from ecommerce.carts.routes import carts
 from ecommerce.main.routes import main
-# apis
+# apis blueprints
 from ecommerce.api.views.products import pro
 
 
