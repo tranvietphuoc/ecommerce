@@ -29,7 +29,7 @@ def register():
     """Register."""
 
     if current_user.is_authenticated:
-        return redirect(url_for("main.home"))
+        return redirect(url_for("home.index"))
 
     categories = db.session.query(Category).all()
     form = RegistrationForm()
@@ -72,7 +72,7 @@ def login():
             # login to user, add remember_me
             login_user(user, remember=form.remember_me.data)
             next_page = request.args.get("next")
-            return redirect(next_page) if next_page else redirect(url_for("main.home"))
+            return redirect(next_page) if next_page else redirect(url_for("home.index"))
         else:
             flash(
                 _("Login unsuccessful. Please check your email and password"), "danger"

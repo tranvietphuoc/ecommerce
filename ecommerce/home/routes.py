@@ -1,16 +1,16 @@
 from flask import Blueprint, render_template, request, g, redirect, url_for, current_app
 from ecommerce.models import db, Category, Product
-from ecommerce.main.forms import SearchForm
+from ecommerce.home.forms import SearchForm
 from flask_login import current_user
 from datetime import datetime
 
 
-main = Blueprint("main", __name__)
+home = Blueprint("home", __name__)
 
 
-@main.route("/", methods=("GET", "POST"))
-@main.route("/home", methods=("GET", "POST"))
-def home():
+@home.route("/", methods=("GET", "POST"))
+@home.route("/home", methods=("GET", "POST"))
+def index():
     categories = db.session.query(Category).all()
     page = request.args.get("page", 1, type=int)
     products = (
@@ -23,7 +23,7 @@ def home():
     )
 
 
-@main.before_app_request
+@home.before_app_request
 def before_request():
     if current_user.is_authenticated:
         current_user.last_seen = datetime.utcnow()
@@ -33,7 +33,7 @@ def before_request():
     # g.locale = str(get_locale())
 
 
-@main.route("/search")
+@home.route("/search")
 def search():
     if not g.search_form.validate_on_submit():
         return redirect(url_for(""))

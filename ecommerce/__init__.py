@@ -13,9 +13,9 @@ from ecommerce.errors.routes import errors
 from ecommerce.products.routes import products
 from ecommerce.categories.routes import categories
 from ecommerce.carts.routes import carts
-from ecommerce.main.routes import main
+from ecommerce.home.routes import home
 # apis blueprints
-from ecommerce.api.views.products import pro
+from ecommerce.api.views.pdt import pdt
 
 
 def create_app(config_class=Config):
@@ -36,6 +36,8 @@ def create_app(config_class=Config):
 
     # init other extensions
     login_manager.init_app(app)
+
+    # mail
     mail.init_app(app)
 
     # babel
@@ -65,10 +67,9 @@ def create_app(config_class=Config):
     app.register_blueprint(errors)
     app.register_blueprint(products)
     app.register_blueprint(carts)
-    app.register_blueprint(main)
+    app.register_blueprint(home)
     app.register_blueprint(categories)
-
-    app.register_blueprint(pro)
+    app.register_blueprint(pdt)
 
     # define some utilities if use flask command
     @app.shell_context_processor
@@ -79,7 +80,6 @@ def create_app(config_class=Config):
     @app.before_first_request
     def create_role():
         """Create two roles when the fisrt run."""
-
         query = db.session.query(Role).all()
         if not query:
             db.session.add(Role(role_name="superuser"))
@@ -123,6 +123,4 @@ def create_app(config_class=Config):
         if click.confirm("Are you sure to drop database?"):
             db.drop_all()
 
-    # asgi_app = WsgiToAsgi(app)
-    # return asgi_app
     return app

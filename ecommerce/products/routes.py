@@ -15,6 +15,7 @@ from ecommerce.products.forms import (
 )
 from ecommerce.utils import save_product_image
 from flask_babel import _
+import os
 
 
 products = Blueprint("products", __name__)
@@ -167,7 +168,12 @@ def delete_product(product_id):
         if not current_user.has_role("admin", "superuser"):
             abort(403)
     product = db.session.query(Product).get_or_404(product_id)
+    # remove product picture
+    pic_dir = os.path.join(os.path.abspath(os.getcwd()), 'ecommerce/static/assets/products/')
+    os.remove(os.path.join(pic_dir, product.product_image))
+    # then delete product in database
     db.session.delete(product)
     db.session.commit()
+    # os.rmdir(os.path.curdir)
     flash(_(f"This product {product_id} has been deleted."), "success")
     return redirect(url_for("main.home"))

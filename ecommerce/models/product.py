@@ -41,11 +41,12 @@ class Product(SearchableMixin, db.Model):
     product_image = db.Column(db.String(100), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     date_added = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    # many-to-one relationship
+    # for many-to-one relationship
     # ForeignKey with Category table
     # category_id = db.Column(
     #    db.Integer, db.ForeignKey("category.category_id"), nullable=False
     # )
+
     # many-to-many relationship with Category table
     categories = db.relationship(
         "Category",
