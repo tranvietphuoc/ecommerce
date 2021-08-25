@@ -1,15 +1,20 @@
+"""
+Configuration of flask environment variables.
+"""
+
 import os
 from dotenv import load_dotenv
 import secrets
 import tempfile
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
+from pathlib import Path
 
 
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-PROJECT_DIR = os.path.abspath(os.path.join(BASE_DIR, os.pardir))
-env_path = os.path.join(PROJECT_DIR, ".env")
-load_dotenv(env_path, override=True)
+base = Path(__file__).resolve().parent  # ../Ecommerce/ecommerce
+project = base.joinpath(base.parent)  # ../Ecommerce
+env = project.joinpath(".env").resolve()  # get abspath for .env
+load_dotenv(env, override=True)
 API_TITLE = os.environ.get('API_TITLE')
 VERSION = os.environ.get('VERSION')
 OPENAPI_VERSION = os.environ.get('OPENAPI_VERSION')
