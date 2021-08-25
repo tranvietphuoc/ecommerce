@@ -15,9 +15,9 @@ base = Path(__file__).resolve().parent  # ../Ecommerce/ecommerce
 project = base.joinpath(base.parent)  # ../Ecommerce
 env = project.joinpath(".env").resolve()  # get abspath for .env
 load_dotenv(env, override=True)
-API_TITLE = os.environ.get('API_TITLE')
-VERSION = os.environ.get('VERSION')
-OPENAPI_VERSION = os.environ.get('OPENAPI_VERSION')
+API_TITLE = os.getenv('API_TITLE')
+VERSION = os.getenv('VERSION')
+OPENAPI_VERSION = os.getenv('OPENAPI_VERSION')
 
 
 class Config:
