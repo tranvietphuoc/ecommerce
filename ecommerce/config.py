@@ -23,6 +23,7 @@ OPENAPI_VERSION = os.getenv('OPENAPI_VERSION')
 class Config:
     DEBUG = True
     TESTING = False
+    CORS_HEADER = os.getenv('CORS_HEADER')
     SECRET_KEY = str(secrets.token_hex(16))
     MAIL_USERNAME = os.getenv("MAIL_USERNAME")
     MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")

@@ -1,12 +1,14 @@
-FROM python:3.8.2
-
-RUN pip install flask flask_mail flask_login flask_admin flask_babel flask_script flask_migrate flask_sqlalchemy wtforms flask_wtf
+FROM python:3.9-alpine
 
 RUN mkdir /app
 
 ADD . /app
 
+COPY . ./app
+
 WORKDIR /app
+
+RUN pip install -r requirements.txt
 
 RUN run python run.sh
 

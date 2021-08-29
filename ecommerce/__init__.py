@@ -1,21 +1,22 @@
 from flask import Flask
 from flask_admin import Admin
+from flask_cors import CORS
 import click
 from werkzeug.security import generate_password_hash
 from elasticsearch import Elasticsearch
-from ecommerce.config import Config
-from ecommerce.auth.views import AdminView, ModelView
-from ecommerce.extensions import mail, babel, migrate, login_manager
-from ecommerce.models import *
+from .config import Config
+from .auth.views import AdminView, ModelView
+from .extensions import mail, babel, migrate, login_manager
+from .models import *
 # import all routes of blueprints here
-from ecommerce.users.routes import users
-from ecommerce.errors.routes import errors
-from ecommerce.products.routes import products
-from ecommerce.categories.routes import categories
-from ecommerce.carts.routes import carts
-from ecommerce.home.routes import home
+from .users.routes import users
+from .errors.routes import errors
+from .products.routes import products
+from .categories.routes import categories
+from .carts.routes import carts
+from .home.routes import home
 # apis blueprints
-from ecommerce.api.views.pdt import pdt
+from .api.views.pdt import pdt
 
 
 def create_app(config_class=Config):
@@ -23,6 +24,9 @@ def create_app(config_class=Config):
 
     app = Flask(__name__)
     app.config.from_object(config_class)
+
+    # cors
+    CORS(app)
 
     # elasticsearch
     app.elasticsearch = (

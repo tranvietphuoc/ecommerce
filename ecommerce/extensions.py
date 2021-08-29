@@ -15,4 +15,3 @@ db = SQLAlchemy()
 migrate = Migrate()
 # login manager
 login_manager = LoginManager()
-

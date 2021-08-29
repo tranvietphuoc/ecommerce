@@ -28,6 +28,7 @@ Flask = "2"
 Flask-Babel = "^2.0.0"
 marshmallow-sqlalchemy = "^0.26.1"
 apispec = "^5.1.0"
+Flask-Cors = "^3.0.10"
 
 [tool.poetry.dev-dependencies]
 
