@@ -6,6 +6,7 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import current_app, jsonify
 from werkzeug.security import check_password_hash
 from ecommerce.extensions import login_manager
+import typing as t
 
 
 # login manager
@@ -15,7 +16,7 @@ login_manager.login_message_category = "info"
 
 # this decorater is used to handle session
 @login_manager.user_loader
-def load_user(user_id):
+def load_user(user_id: t.Optional[int]):
     """
     Flask-Login keeps track of the logged in user by storing
     its unique identifier in Flask's user session,
@@ -110,7 +111,7 @@ class User(db.Model, UserMixin, RoleMixin):
             return check_password_hash(user.password, form.password.data)
 
     @staticmethod
-    def verify_reset_token(token):
+    def verify_reset_token(token: t.Optional[str]):
         """Utility for verify reset password token"""
 
         s = Serializer(current_app.config["SECRET_KEY"])

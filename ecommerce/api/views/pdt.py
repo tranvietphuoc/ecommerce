@@ -4,19 +4,32 @@ from ..schemas import ProductSchema
 from ..encoders import DecimalEncoder
 from sqlalchemy import select
 from flask_cors import cross_origin
+from flask.views import MethodView
+from ecommerce.extensions import spec
 
 
-pdt = Blueprint('pdt', __name__)
+pdt = Blueprint('pdt', __name__, url_prefix='/api/v1/product')
 
 
-@pdt.get("/api/v1/product/list")
-@cross_origin(origin='*')
-def get_products():
-    # stmt = select(Product).join(Product.categories)
-    # products = db.session.query(Product, Category).filter(Product.categories ==
-    #         Category.id).all()
-    products = db.session.query(Product).all()
-    schema = ProductSchema(many=True)
+class ProductView(MethodView):
+    @cross_origin(origin='*')
+    def get(self):
+        """
+        Product view
+        ---
+        get:
+            description: Get all products from database
+            responses:
+                200:
+                    content:
+                        application/json:
+                        schema: ProductSchema
+        """
+        products = db.session.query(Product).all()
+        schema = ProductSchema(many=True)
+        return json.dumps(schema.dump(products), cls=DecimalEncoder)
 
-    return json.dumps(schema.dump(products), cls=DecimalEncoder)
-    # print(stmt)
+
+products_view = ProductView.as_view('product_view')
+spec.components.schema('Ecommerce', schema=ProductSchema)
+pdt.add_url_rule('/all', view_func=products_view)

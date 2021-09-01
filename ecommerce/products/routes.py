@@ -7,15 +7,16 @@ from flask import (
     url_for,
     request,
 )
-from ecommerce.models import db, Product, Category
+from ..models import db, Product, Category
 from flask_login import current_user
-from ecommerce.products.forms import (
+from .forms import (
     AddProductForm,
     UpdateProductForm,
 )
-from ecommerce.utils import save_product_image
+from ..utils import save_product_image
 from flask_babel import _
 import os
+import typing as t
 
 
 products = Blueprint("products", __name__)
@@ -81,7 +82,7 @@ def add_product():
 
 
 @products.route("/admin/products/<int:product_id>/update", methods=("GET", "POST"))
-def update_product(product_id):
+def update_product(product_id: t.Optional[int]):
     """Update informations of product with product_id. Only for superuser."""
 
     if not current_user.is_active or not current_user.is_authenticated:
@@ -145,7 +146,7 @@ def update_product(product_id):
 
 
 @products.route("/products/<int:product_id>/detail", methods=("GET", "POST"))
-def detail_product(product_id):
+def detail_product(product_id: t.Optional[str]):
     """Get informations of particular product by product_id."""
 
     product = db.session.query(Product).get_or_404(product_id)
@@ -159,7 +160,7 @@ def detail_product(product_id):
 
 
 @products.route("/admin/products/<int:product_id>/delete", methods=("GET", "POST"))
-def delete_product(product_id):
+def delete_product(product_id: t.Optional[int]):
     """Delete a particular product by product_id. Only superuser can do that."""
 
     if not current_user.is_active or not current_user.is_authenticated:

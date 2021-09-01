@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, g, redirect, url_for, current_app
-from ecommerce.models import db, Category, Product
-from ecommerce.home.forms import SearchForm
+from ..models import db, Category, Product
+from .forms import SearchForm
 from flask_login import current_user
 from datetime import datetime
 

@@ -10,7 +10,7 @@ from wtforms.validators import (
 )
 from flask_login import current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from ecommerce.models import User
+from ..models import User
 
 
 class RegistrationForm(FlaskForm):

@@ -3,12 +3,13 @@ from flask import url_for, current_app, session, flash, redirect
 from ecommerce import mail
 from flask_mail import Message
 from PIL import Image
-from ecommerce.models import db, User, Cart, Product, Category
+from .models import db, User, Cart, Product, Category
 import hashlib
+import typing as t
 
 
 # Save profile picture
-def save_picture(form_picture, user_name):
+def save_picture(form_picture: t.Any, user_name: t.Optional[str]):
     _, file_ext = os.path.splitext(form_picture.filename)
     picture_name = hashlib.sha256(user_name.encode("utf-8")).hexdigest()[0:16] + file_ext
     picture_path = os.path.join(
@@ -22,7 +23,7 @@ def save_picture(form_picture, user_name):
 
 
 # send reset token to mail of user
-def send_reset_token(user):
+def send_reset_token(user: t.Optional[int]):
     token = user.get_reset_token()
     msg = Message(
         "Password reset request", sender="noreply@gmail.com", recipients=[user.email],
@@ -40,12 +41,12 @@ def get_cart_info():
     return
 
 
-def remove_ordered_product_from_cart(user_id):
+def remove_ordered_product_from_cart(user_id: t.Optional[int]):
     db.session.query(Cart).filter(Cart.user_id == user_id).delete()
     db.session.commit()
 
 
-def add_ordered_products(user_id, order_id):
+def add_ordered_products(user_id: t.Optional[int], order_id: t.Optional[int]):
     """Add products have been ordered to OrderedProduct table"""
     cart = Cart.query.with_entities(Cart.product_id, Cart.quantity).filter(
         Cart.user_id == user_id
@@ -60,7 +61,7 @@ def add_ordered_products(user_id, order_id):
 
 
 # product
-def remove_product_from_cart(product_id):
+def remove_product_from_cart(product_id: t.Optional[int]):
     userID = (
         User.query.with_entities(User.user_id)
         .filter(User.email == session["email"])
@@ -78,11 +79,11 @@ def remove_product_from_cart(product_id):
     return redirect(url_for("cart/cart.html"))
 
 
-def get_product_detail(product_id):
+def get_product_detail(product_id: t.Optional[int]):
     return Product.query.filter(Product.product_id == product_id).first_or_404()
 
 
-def save_product_image(form_image, product_name):
+def save_product_image(form_image: t.Any, product_name: t.Optional[str]):
     _, file_ext = os.path.splitext(form_image.filename)
     image_name = hashlib.sha256(product_name.encode("utf-8")).hexdigest()[0:16] + file_ext
     image_path = os.path.join(

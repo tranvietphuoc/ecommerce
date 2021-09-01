@@ -7,9 +7,9 @@ from flask import (
         url_for,
         request,
 )
-from ecommerce.models import db, Category
+from ..models import db, Category
 from flask_login import current_user
-from ecommerce.categories.forms import (
+from .forms import (
     AddCategoryForm,
     UpdateCategoryForm,
 )

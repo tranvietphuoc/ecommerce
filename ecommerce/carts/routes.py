@@ -1,4 +1,4 @@
-from ecommerce.models import Cart, db, Product
+from ..models import Cart, db, Product
 from flask import Blueprint, redirect, render_template, url_for, request
 
 

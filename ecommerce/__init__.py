@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash
 from elasticsearch import Elasticsearch
 from .config import Config
 from .auth.views import AdminView, ModelView
-from .extensions import mail, babel, migrate, login_manager
+from .extensions import mail, babel, migrate, login_manager, spec
 from .models import *
 # import all routes of blueprints here
 from .users.routes import users
@@ -16,10 +16,11 @@ from .categories.routes import categories
 from .carts.routes import carts
 from .home.routes import home
 # apis blueprints
-from .api.views.pdt import pdt
+from .api.views.pdt import pdt, ProductView, products_view
+import typing as t
 
 
-def create_app(config_class=Config):
+def create_app(config_class: t.Type[Config]=Config):
     """Create Flask app with some extensions"""
 
     app = Flask(__name__)
@@ -53,6 +54,10 @@ def create_app(config_class=Config):
 
     # Admin panel follow db
     admin = Admin(app, name="E-commerce")
+
+    # apis docs
+    with app.test_request_context():
+        spec.path(view=products_view)
 
     # add views for admin
     admin.add_view(ModelView(User, db.session))

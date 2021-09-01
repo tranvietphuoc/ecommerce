@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template
-from ecommerce.models import db, Category
+from ..models import db, Category
 from werkzeug.exceptions import HTTPException
 import json
 

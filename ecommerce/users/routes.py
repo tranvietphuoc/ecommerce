@@ -6,19 +6,19 @@ from flask import (
         url_for,
         make_response
 )
-
 from flask_login import login_required, login_user, current_user, logout_user
 from werkzeug.security import generate_password_hash
-from ecommerce.users.forms import (
+from .forms import (
     RegistrationForm,
     LoginForm,
     UpdateForm,
     SendResetTokenForm,
     ResetPasswordForm,
 )
-from ecommerce.models import User, db, Role, Category
-from ecommerce.utils import save_picture, send_reset_token
+from ..models import User, db, Role, Category
+from ..utils import save_picture, send_reset_token
 from flask_babel import _
+import typing as t
 
 
 users = Blueprint("users", __name__)
@@ -155,7 +155,7 @@ def send_reset():
 
 
 @users.route("/reset/<string:token>", methods=("GET", "POST"))
-def reset_password(token):
+def reset_password(token: t.Optional[str]):
     """Confirm reset token and save new password"""
     if current_user.is_authenticated:
         return redirect(url_for("main.home"))

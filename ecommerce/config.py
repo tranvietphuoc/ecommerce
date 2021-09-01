@@ -51,11 +51,12 @@ class Config:
     ELASTICSEARCH_URL = os.getenv("ELASTICSEARCH_URL")
     FLASK_ADMIN_SWATCH = os.getenv("FLASK_ADMIN_SWATCH")
     APISPEC_SPEC = APISpec(
-            title=API_TITLE,
-            version=VERSION,
-            plugins=[MarshmallowPlugin()],
-            openapi_version=OPENAPI_VERSION
-            )
+        title=API_TITLE,
+        version=VERSION,
+        plugins=[MarshmallowPlugin()],
+        openapi_version=OPENAPI_VERSION
+    )
+
     # @property
     # def SQLALCHEMY_DATABASE_URI(self):
     #    return self.DB_URI % self.POSTGRES
