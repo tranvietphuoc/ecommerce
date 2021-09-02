@@ -1,11 +1,11 @@
 from flask import (
-        Blueprint,
-        abort,
-        flash,
-        render_template,
-        redirect,
-        url_for,
-        request,
+    Blueprint,
+    abort,
+    flash,
+    render_template,
+    redirect,
+    url_for,
+    request,
 )
 from ..models import db, Category
 from flask_login import current_user
@@ -16,7 +16,7 @@ from .forms import (
 from flask_babel import _
 
 
-categories = Blueprint('categories', __name__)
+categories = Blueprint("categories", __name__)
 
 
 @categories.route("/admin/categories/new", methods=("GET", "POST"))

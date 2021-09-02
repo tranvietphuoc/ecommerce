@@ -6,8 +6,9 @@ import os
 from dotenv import load_dotenv
 import secrets
 import tempfile
-from apispec import APISpec
-from apispec.ext.marshmallow import MarshmallowPlugin
+
+# from apispec import APISpec
+# from apispec.ext.marshmallow import MarshmallowPlugin
 from pathlib import Path
 
 
@@ -15,15 +16,15 @@ base = Path(__file__).resolve().parent  # ../Ecommerce/ecommerce
 project = base.joinpath(base.parent)  # ../Ecommerce
 env = project.joinpath(".env").resolve()  # get abspath for .env
 load_dotenv(env, override=True)
-API_TITLE = os.getenv('API_TITLE')
-VERSION = os.getenv('VERSION')
-OPENAPI_VERSION = os.getenv('OPENAPI_VERSION')
+API_TITLE = os.getenv("API_TITLE")
+VERSION = os.getenv("VERSION")
+OPENAPI_VERSION = os.getenv("OPENAPI_VERSION")
 
 
 class Config:
     DEBUG = True
     TESTING = False
-    CORS_HEADER = os.getenv('CORS_HEADER')
+    CORS_HEADER = os.getenv("CORS_HEADER")
     SECRET_KEY = str(secrets.token_hex(16))
     MAIL_USERNAME = os.getenv("MAIL_USERNAME")
     MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
@@ -50,12 +51,12 @@ class Config:
     LANGUAGES = ["en", "vi"]
     ELASTICSEARCH_URL = os.getenv("ELASTICSEARCH_URL")
     FLASK_ADMIN_SWATCH = os.getenv("FLASK_ADMIN_SWATCH")
-    APISPEC_SPEC = APISpec(
-        title=API_TITLE,
-        version=VERSION,
-        plugins=[MarshmallowPlugin()],
-        openapi_version=OPENAPI_VERSION
-    )
+    # APISPEC_SPEC = APISpec(
+    #     title=API_TITLE,
+    #     version=VERSION,
+    #     plugins=[MarshmallowPlugin()],
+    #     openapi_version=OPENAPI_VERSION
+    # )
 
     # @property
     # def SQLALCHEMY_DATABASE_URI(self):

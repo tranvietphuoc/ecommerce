@@ -44,8 +44,12 @@ def unauthorized():
 # many-to-many relationship
 users_roles = db.Table(
     "users_roles",
-    db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
-    db.Column("role_id", db.Integer, db.ForeignKey("role.id"), primary_key=True),
+    db.Column(
+        "user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True
+    ),
+    db.Column(
+        "role_id", db.Integer, db.ForeignKey("role.id"), primary_key=True
+    ),
 )
 
 
@@ -67,7 +71,9 @@ class User(db.Model, UserMixin, RoleMixin):
     zipcode = db.Column(db.String(20), default="")
     email = db.Column(db.String(100), nullable=False)
     phone = db.Column(db.String(20), nullable=False, unique=True)
-    profile_picture = db.Column(db.String(200), nullable=False, default="default.jpg")
+    profile_picture = db.Column(
+        db.String(200), nullable=False, default="default.jpg"
+    )
     is_superuser = db.Column(db.Boolean, default=False)
     roles = db.relationship(
         "Role",
@@ -78,9 +84,7 @@ class User(db.Model, UserMixin, RoleMixin):
     )
 
     def __repr__(self):
-        return (
-            f"<User('{self.id}', '{self.user_name}', '{self.email}', '{self.phone}')>"
-        )
+        return f"<User('{self.id}', '{self.user_name}', '{self.email}', '{self.phone}')>"
 
     def __str__(self):
         return f"User: {self.user_name}"

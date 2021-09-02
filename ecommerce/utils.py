@@ -11,7 +11,9 @@ import typing as t
 # Save profile picture
 def save_picture(form_picture: t.Any, user_name: t.Optional[str]):
     _, file_ext = os.path.splitext(form_picture.filename)
-    picture_name = hashlib.sha256(user_name.encode("utf-8")).hexdigest()[0:16] + file_ext
+    picture_name = (
+        hashlib.sha256(user_name.encode("utf-8")).hexdigest()[0:16] + file_ext
+    )
     picture_path = os.path.join(
         current_app.root_path, "static/assets/users", picture_name
     )
@@ -26,7 +28,9 @@ def save_picture(form_picture: t.Any, user_name: t.Optional[str]):
 def send_reset_token(user: t.Optional[int]):
     token = user.get_reset_token()
     msg = Message(
-        "Password reset request", sender="noreply@gmail.com", recipients=[user.email],
+        "Password reset request",
+        sender="noreply@gmail.com",
+        recipients=[user.email],
     )
     msg.body = f"""
     To reset your password, visit the following link:
@@ -85,7 +89,9 @@ def get_product_detail(product_id: t.Optional[int]):
 
 def save_product_image(form_image: t.Any, product_name: t.Optional[str]):
     _, file_ext = os.path.splitext(form_image.filename)
-    image_name = hashlib.sha256(product_name.encode("utf-8")).hexdigest()[0:16] + file_ext
+    image_name = (
+        hashlib.sha256(product_name.encode("utf-8")).hexdigest()[0:16] + file_ext
+    )
     image_path = os.path.join(
         current_app.root_path, "static/assets/products", image_name
     )

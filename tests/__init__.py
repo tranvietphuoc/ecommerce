@@ -9,7 +9,7 @@ import pytest
 def client():
     db_fd, db_path = tempfile.mkdstemp()
     app = create_app(config_class=TestingConfig)
-    app.config['DATABASE': db_path]
+    app.config["DATABASE":db_path]
 
     with app.test_client() as client:
         yield client

@@ -8,6 +8,8 @@ from .config import Config
 from .auth.views import AdminView, ModelView
 from .extensions import mail, babel, migrate, login_manager, spec
 from .models import *
+
+
 # import all routes of blueprints here
 from .users.routes import users
 from .errors.routes import errors
@@ -15,12 +17,13 @@ from .products.routes import products
 from .categories.routes import categories
 from .carts.routes import carts
 from .home.routes import home
+
 # apis blueprints
 from .api.views.pdt import pdt, ProductView, products_view
 import typing as t
 
 
-def create_app(config_class: t.Type[Config]=Config):
+def create_app(config_class: t.Type[Config] = Config):
     """Create Flask app with some extensions"""
 
     app = Flask(__name__)
@@ -102,9 +105,15 @@ def create_app(config_class: t.Type[Config]=Config):
     def create_superuser(superuser):
         """Create superuser with CLI interface."""
 
-        name = click.prompt("Enter superuser name.",type=str, default="superuser")
-        email = click.prompt("Enter superuser email.", default="superuser@email.com")
-        phone_number = click.prompt("Enter superuser phone number.", default="0111111111")
+        name = click.prompt(
+            "Enter superuser name.", type=str, default="superuser"
+        )
+        email = click.prompt(
+            "Enter superuser email.", default="superuser@email.com"
+        )
+        phone_number = click.prompt(
+            "Enter superuser phone number.", default="0111111111"
+        )
         password = click.prompt("Enter pasword.", hide_input=True)
         if not User.query.filter_by(user_name=name).first():
             user = User(

@@ -32,5 +32,5 @@ spec = APISpec(
     plugins=[
         MarshmallowPlugin(),
         FlaskPlugin(),
-    ]
+    ],
 )
