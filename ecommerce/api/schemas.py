@@ -1,12 +1,12 @@
 from ecommerce.models import (
-        User,
-        Product,
-        Category,
-        Role,
-        Order,
-        OrderedProduct,
-        SaleTransaction,
-        Cart
+    User,
+    Product,
+    Category,
+    Role,
+    Order,
+    OrderedProduct,
+    SaleTransaction,
+    Cart,
 )
 from marshmallow_sqlalchemy import auto_field
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema

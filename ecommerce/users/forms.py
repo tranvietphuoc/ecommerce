@@ -71,7 +71,8 @@ class LoginForm(FlaskForm):
 
 class UpdateForm(FlaskForm):
     """Need to input password to update, another fields is not needed"""
-    user_name = StringField('Username', validators=[DataRequired()])
+
+    user_name = StringField("Username", validators=[DataRequired()])
     full_name = StringField("Full name:", render_kw={"placeholder": "Full name"})
     email = StringField("Email:", render_kw={"placeholder": "Email"})
     profile_picture = FileField(

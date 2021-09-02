@@ -1,10 +1,11 @@
 from flask import (
-        Blueprint,
-        request,
-        render_template,
-        redirect, flash,
-        url_for,
-        make_response
+    Blueprint,
+    request,
+    render_template,
+    redirect,
+    flash,
+    url_for,
+    make_response,
 )
 from flask_login import login_required, login_user, current_user, logout_user
 from werkzeug.security import generate_password_hash
@@ -77,9 +78,13 @@ def login():
             flash(
                 _("Login unsuccessful. Please check your email and password"), "danger"
             )
-    resp = make_response(render_template('user/login.html', title=_("Sign in"),
-        form=form, categories=categories))
+    resp = make_response(
+        render_template(
+            "user/login.html", title=_("Sign in"), form=form, categories=categories
+        )
+    )
     return resp
+
 
 @users.route("/logout", methods=("GET", "POST"))
 def logout():

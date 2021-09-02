@@ -13,7 +13,9 @@ from wtforms.validators import DataRequired
 class AddProductForm(FlaskForm):
     categories = SelectMultipleField("Category", choices=[])
     sku = IntegerField(
-        "Product SKU:", validators=[DataRequired()], render_kw={"placeholder": "SKU"},
+        "Product SKU:",
+        validators=[DataRequired()],
+        render_kw={"placeholder": "SKU"},
     )
     product_name = StringField(
         "Product name:",
@@ -44,7 +46,9 @@ class AddProductForm(FlaskForm):
 class UpdateProductForm(FlaskForm):
     categories = SelectMultipleField("Category", choices=[])
     sku = IntegerField(
-        "Product SKU:", validators=[DataRequired()], render_kw={"placeholder": "SKU"},
+        "Product SKU:",
+        validators=[DataRequired()],
+        render_kw={"placeholder": "SKU"},
     )
     product_name = StringField(
         "Product name:",

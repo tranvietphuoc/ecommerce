@@ -8,11 +8,11 @@ from flask.views import MethodView
 from ecommerce.extensions import spec
 
 
-pdt = Blueprint('pdt', __name__, url_prefix='/api/v1/product')
+pdt = Blueprint("pdt", __name__, url_prefix="/api/v1/product")
 
 
 class ProductView(MethodView):
-    @cross_origin(origin='*')
+    @cross_origin(origin="*")
     def get(self):
         """
         Product view
@@ -30,6 +30,6 @@ class ProductView(MethodView):
         return json.dumps(schema.dump(products), cls=DecimalEncoder)
 
 
-products_view = ProductView.as_view('product_view')
-spec.components.schema('Ecommerce', schema=ProductSchema)
-pdt.add_url_rule('/all', view_func=products_view)
+products_view = ProductView.as_view("product_view")
+spec.components.schema("Ecommerce", schema=ProductSchema)
+pdt.add_url_rule("/all", view_func=products_view)
