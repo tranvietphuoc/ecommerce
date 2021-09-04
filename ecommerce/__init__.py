@@ -9,7 +9,6 @@ from .auth.views import AdminView, ModelView
 from .extensions import mail, babel, migrate, login_manager, spec
 from .models import *
 
-
 # import all routes of blueprints here
 from .users.routes import users
 from .errors.routes import errors
@@ -59,8 +58,8 @@ def create_app(config_class: t.Type[Config] = Config):
     admin = Admin(app, name="E-commerce")
 
     # apis docs
-    with app.test_request_context():
-        spec.path(view=products_view)
+    # with app.test_request_context():
+    #     spec.path(view=products_view)
 
     # add views for admin
     admin.add_view(ModelView(User, db.session))

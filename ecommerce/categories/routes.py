@@ -44,7 +44,9 @@ def add_category():
     )
 
 
-@categories.route("/admin/categories/<int:category_id>/update", methods=("GET", "POST"))
+@categories.route(
+    "/admin/categories/<int:category_id>/update", methods=("GET", "POST")
+)
 def update_category(category_id):
     """Update informations of category has category_id. Only for superuser."""
 
@@ -60,7 +62,9 @@ def update_category(category_id):
         category.category_name = form.category_name.data
         category.products.append()
         db.session.commit()
-        flash(_(f"Category {category.category_name} has been updated."), "success")
+        flash(
+            _(f"Category {category.category_name} has been updated."), "success"
+        )
         return redirect(url_for("categories.get_category"))
     elif request.method == "GET":
         form.category_name.data = category.category_name
@@ -73,7 +77,9 @@ def update_category(category_id):
     return redirect(url_for("categories.get_categories"))
 
 
-@categories.route("/categories/<int:category_id>/detail", methods=("GET", "POST"))
+@categories.route(
+    "/categories/<int:category_id>/detail", methods=("GET", "POST")
+)
 def detail_category(category_id):
     """Get details of category with category_id (display category and all products of it)"""
 
@@ -100,7 +106,9 @@ def get_categories():
     )
 
 
-@categories.route("/admin/categories/<int:category_id>/delete", methods=("GET", "POST"))
+@categories.route(
+    "/admin/categories/<int:category_id>/delete", methods=("GET", "POST")
+)
 def delete_category(category_id):
     """Delete particular category with category_id. Only superuser can delete."""
 
@@ -113,4 +121,4 @@ def delete_category(category_id):
     db.session.delete(category)
     db.session.commit()
     flash(_(f"The category {category_id} has been deleted."), "success")
-    return redirect(url_for("main.home"))
+    return redirect(url_for("home.index"))
