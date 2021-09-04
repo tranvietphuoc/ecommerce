@@ -1,7 +1,13 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from flask_wtf.file import FileField, FileAllowed
-from wtforms.validators import DataRequired, Length, EqualTo, Email, ValidationError
+from wtforms.validators import (
+    DataRequired,
+    Length,
+    EqualTo,
+    Email,
+    ValidationError,
+)
 from ..models import User
 from flask_login import current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -25,7 +31,9 @@ class RegistrationForm(FlaskForm):
         render_kw={"placeholder": "Email"},
     )
     password = PasswordField(
-        "Password:", validators=[DataRequired()], render_kw={"placeholder": "Password"}
+        "Password:",
+        validators=[DataRequired()],
+        render_kw={"placeholder": "Password"},
     )
     confirm_password = PasswordField(
         "Confirm password:",
@@ -63,7 +71,9 @@ class LoginForm(FlaskForm):
         render_kw={"placeholder": "Email"},
     )
     password = PasswordField(
-        "Password:", validators=[DataRequired()], render_kw={"placeholder": "Password"}
+        "Password:",
+        validators=[DataRequired()],
+        render_kw={"placeholder": "Password"},
     )
     submit = SubmitField("Sign in")
     remember_me = BooleanField("Remember me:")
@@ -73,10 +83,13 @@ class UpdateForm(FlaskForm):
     """Need to input password to update, another fields is not needed"""
 
     user_name = StringField("Username", validators=[DataRequired()])
-    full_name = StringField("Full name:", render_kw={"placeholder": "Full name"})
+    full_name = StringField(
+        "Full name:", render_kw={"placeholder": "Full name"}
+    )
     email = StringField("Email:", render_kw={"placeholder": "Email"})
     profile_picture = FileField(
-        "Update profile picture:", validators=[FileAllowed(["jpg", "png", "jpeg"])]
+        "Update profile picture:",
+        validators=[FileAllowed(["jpg", "png", "jpeg"])],
     )
     old_password = PasswordField(
         "Old password:",
@@ -118,12 +131,16 @@ class UpdateForm(FlaskForm):
     def validate_password(self, old_password: t.Optional[str]):
         o_pw_h = generate_password_hash(old_password.data).decode("utf-8")
         if not check_password_hash(o_pw_h, current_user.password):
-            raise ValidationError("Your old password is incorrect. Please try again.")
+            raise ValidationError(
+                "Your old password is incorrect. Please try again."
+            )
 
     def validate_email(self, email: t.Optional[str]):
         user = User.query.filter_by(email=email.data).first()
         if user:
-            raise ValidationError("This email is taken. Please choose another one.")
+            raise ValidationError(
+                "This email is taken. Please choose another one."
+            )
 
 
 class ResetPasswordForm(FlaskForm):

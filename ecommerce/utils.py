@@ -1,4 +1,3 @@
-import os
 from flask import url_for, current_app, session, flash, redirect
 from ecommerce import mail
 from flask_mail import Message
@@ -6,17 +5,22 @@ from PIL import Image
 from .models import db, User, Cart, Product, Category
 import hashlib
 import typing as t
+from pathlib import Path
 
 
 # Save profile picture
 def save_picture(form_picture: t.Any, user_name: t.Optional[str]):
-    _, file_ext = os.path.splitext(form_picture.filename)
+    file_ext = Path(form_picture.filename).suffix
     picture_name = (
         hashlib.sha256(user_name.encode("utf-8")).hexdigest()[0:16] + file_ext
     )
-    picture_path = os.path.join(
-        current_app.root_path, "static/assets/users", picture_name
+    picture_path = (
+        Path(current_app.root_path)
+        .joinpath("static/assets/users")
+        .joinpath(picture_name)
+        .resolve()
     )
+
     output_size = (100, 100)
     img = Image.open(form_picture)
     img.thumbnail(output_size)
@@ -57,7 +61,9 @@ def add_ordered_products(user_id: t.Optional[int], order_id: t.Optional[int]):
     )
     for item in cart:
         orderd_product = OrderProduct(
-            order_id=order_id, product_id=item.product_id, quantity=item.quantity
+            order_id=order_id,
+            product_id=item.product_id,
+            quantity=item.quantity,
         )
         db.session.add(orderd_product)
         db.session.flush()
@@ -88,12 +94,17 @@ def get_product_detail(product_id: t.Optional[int]):
 
 
 def save_product_image(form_image: t.Any, product_name: t.Optional[str]):
-    _, file_ext = os.path.splitext(form_image.filename)
+    # _, file_ext = os.path.splitext(form_image.filename)
+    file_ext = Path(form_image.filename).suffix
     image_name = (
-        hashlib.sha256(product_name.encode("utf-8")).hexdigest()[0:16] + file_ext
+        hashlib.sha256(product_name.encode("utf-8")).hexdigest()[0:16]
+        + file_ext
     )
-    image_path = os.path.join(
-        current_app.root_path, "static/assets/products", image_name
+    image_path = (
+        Path(current_app.root_path)
+        .joinpath("static/assets/products")
+        .joinpath(image_name)
+        .resolve()
     )
     img = Image.open(form_image)
     img.save(image_path)

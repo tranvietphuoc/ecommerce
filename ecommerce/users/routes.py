@@ -55,7 +55,10 @@ def register():
         )
         return redirect(url_for("users.login"))
     return render_template(
-        "user/register.html", title=_("Register"), form=form, categories=categories
+        "user/register.html",
+        title=_("Register"),
+        form=form,
+        categories=categories,
     )
 
 
@@ -63,7 +66,7 @@ def register():
 def login():
     """Log in"""
     if current_user.is_authenticated:
-        return redirect(url_for("main.home"))
+        return redirect(url_for("home.index"))
 
     categories = db.session.query(Category).all()
     form = LoginForm()
@@ -73,14 +76,22 @@ def login():
             # login to user, add remember_me
             login_user(user, remember=form.remember_me.data)
             next_page = request.args.get("next")
-            return redirect(next_page) if next_page else redirect(url_for("home.index"))
+            return (
+                redirect(next_page)
+                if next_page
+                else redirect(url_for("home.index"))
+            )
         else:
             flash(
-                _("Login unsuccessful. Please check your email and password"), "danger"
+                _("Login unsuccessful. Please check your email and password"),
+                "danger",
             )
     resp = make_response(
         render_template(
-            "user/login.html", title=_("Sign in"), form=form, categories=categories
+            "user/login.html",
+            title=_("Sign in"),
+            form=form,
+            categories=categories,
         )
     )
     return resp
@@ -128,7 +139,9 @@ def about():
         return redirect(url_for("users.about"))
     elif request.method == "GET":
         form.email.data = current_user.email
-    picture = url_for("static", filename="assets/users/" + current_user.profile_picture)
+    picture = url_for(
+        "static", filename="assets/users/" + current_user.profile_picture
+    )
     return render_template(
         "user/about.html",
         title=_("About"),
@@ -142,14 +155,16 @@ def about():
 def send_reset():
     """Send reset token to user's email"""
     if current_user.is_authenticated:
-        return redirect(url_for("main.home"))
+        return redirect(url_for("home.index"))
 
     categories = db.session.query(Category).all()
     form = SendResetTokenForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         send_reset_token(user)
-        flash(_("An email sent with instructions to reset your password."), "info")
+        flash(
+            _("An email sent with instructions to reset your password."), "info"
+        )
         redirect(url_for("users.login"))
     return render_template(
         "user/reset_request.html",
@@ -163,7 +178,7 @@ def send_reset():
 def reset_password(token: t.Optional[str]):
     """Confirm reset token and save new password"""
     if current_user.is_authenticated:
-        return redirect(url_for("main.home"))
+        return redirect(url_for("home.index"))
     user = User.verify_reset_token(token)  # verify reset token
     if not user:
         flash(_("This token is invalid."), "warning")
