@@ -6,6 +6,7 @@ from flask import (
     redirect,
     url_for,
     request,
+    current_app,
 )
 from ..models import db, Product, Category
 from flask_login import current_user
@@ -175,8 +176,8 @@ def delete_product(product_id: t.Optional[int]):
     product = db.session.query(Product).get_or_404(product_id)
     # remove product picture
     pic_path = (
-        Path.cwd()
-        .joinpath("ecommerce/static/assets/products")
+        Path(current_app.root_path)
+        .joinpath("static/assets/products")
         .joinpath(product.product_image)
         .resolve()
     )
