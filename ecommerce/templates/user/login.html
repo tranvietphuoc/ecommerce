@@ -12,7 +12,7 @@
     >
       {{ form.hidden_tag() }}
       <fieldset class="form-group">
-        <legend class="border-auto">Log in</legend>
+        <legend>Log in</legend>
         {{ render_field(form.email) }}
         {{ render_field(form.password) }}
         {{ render_check(form.remember_me) }}
@@ -20,10 +20,15 @@
       <div class="form-group">
         {{ render_button(form.submit) }} 
       </div>
-      <div class="aulixary border-top">
-        <small class="text-muted"><a href="{{ url_for('users.send_reset') }}">Forgot password? </a></small>
-        <br>
-        <small class="text-muted">Need an account? <a href="{{ url_for('users.register') }}">Sign up</a></small>
+      <div class="form-group">
+        <div class="login-redirect">
+          <div></div>
+          <div>
+            <small class="text-muted"><a href="{{ url_for('users.send_reset') }}">Forgot password? </a></small>
+            <br>
+            <small class="text-muted">Need an account? <a href="{{ url_for('users.register') }}">Sign up</a></small>
+          </div>
+        </div> 
       </div>
     </form>
   </div>

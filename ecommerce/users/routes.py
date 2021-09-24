@@ -20,6 +20,7 @@ from ..models import User, db, Role, Category
 from ..utils import save_picture, send_reset_token
 from flask_babel import _
 import typing as t
+from ..logs import logger
 
 
 users = Blueprint("users", __name__)
@@ -49,6 +50,7 @@ def register():
         user_role = db.session.query(Role).filter_by(role_name="user").first()
         user_role.users.append(user)
         db.session.commit()
+        logger.info("Your account have been created.")
         flash(
             _(f"Your account have been created. You are now able to log in."),
             "success",
@@ -75,6 +77,7 @@ def login():
         if user and User.verify_password(form):
             # login to user, add remember_me
             login_user(user, remember=form.remember_me.data)
+            logger.info("Login success.")
             next_page = request.args.get("next")
             return (
                 redirect(next_page)
@@ -101,6 +104,7 @@ def login():
 def logout():
     """Log out"""
     logout_user()
+    logger.info("Logged out.")
     return redirect(url_for("users.login"))
 
 
@@ -135,6 +139,7 @@ def about():
         if form.phone.data:
             current_user.phone = form.phone.data
         db.session.commit()
+        logger.info("Your account have been updated.")
         flash(_("Your account have been updated."), "success")
         return redirect(url_for("users.about"))
     elif request.method == "GET":
@@ -162,6 +167,7 @@ def send_reset():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         send_reset_token(user)
+        logger.info("Success send reset token to email.")
         flash(
             _("An email sent with instructions to reset your password."), "info"
         )
@@ -189,6 +195,7 @@ def reset_password(token: t.Optional[str]):
     if form.validate_on_submit():
         user.password = generate_password_hash(form.password.data)
         db.session.commit()
+        logger.info("Reset password success.")
         flash(
             _("Your password have been updated. You are now able to login."),
             "success",

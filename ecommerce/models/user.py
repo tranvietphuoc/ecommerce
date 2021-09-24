@@ -36,7 +36,7 @@ def load_request(request):
 
 @login_manager.unauthorized_handler
 def unauthorized():
-    flash("You must be logged in.")
+    flash("You must be logged in.", "info")
     return redirect(url_for("users.login"))
 
 
