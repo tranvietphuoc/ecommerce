@@ -20,9 +20,10 @@ from .home.routes import home
 # apis blueprints
 from .api.views.pdt import pdt, ProductView, products_view
 import typing as t
+from .logs import logger
 
 
-def create_app(config_class: t.Type[Config] = Config):
+def create_app(config_class: t.Optional[t.Type[Config]] = Config):
     """Create Flask app with some extensions"""
 
     app = Flask(__name__)
@@ -70,9 +71,6 @@ def create_app(config_class: t.Type[Config] = Config):
     admin.add_view(ModelView(OrderedProduct, db.session))
     admin.add_view(ModelView(SaleTransaction, db.session))
 
-    # initialize migrating database
-    migrate.init_app(app, db)
-
     # then register these blueprints here
     app.register_blueprint(users)
     app.register_blueprint(errors)
@@ -81,6 +79,9 @@ def create_app(config_class: t.Type[Config] = Config):
     app.register_blueprint(home)
     app.register_blueprint(categories)
     app.register_blueprint(pdt)
+
+    # initialize migrating database
+    migrate.init_app(app, db)
 
     # define some utilities if use flask command
     @app.shell_context_processor
@@ -97,7 +98,8 @@ def create_app(config_class: t.Type[Config] = Config):
             db.session.add(Role(role_name="admin"))
             db.session.add(Role(role_name="user"))
             db.session.commit()
-            print("Roles have been created.")
+            # print("Roles have been created.")
+            logger.info("Created roles.")
 
     @app.cli.command("create")
     @click.argument("superuser")
@@ -129,9 +131,11 @@ def create_app(config_class: t.Type[Config] = Config):
             )
             superuser_role.users.append(user)
             db.session.commit()
-            print(f"User {name} has been created.")
+            # print(f"User {name} has been created.")
+            logger.info(f"User {name} has been created.")
         else:
-            print(f"User {name} already existed in database.")
+            # print(f"User {name} already existed in database.")
+            logger.info(f"User {name} already existed in database.")
 
     @app.cli.command("dropdb")
     def drop_db():
@@ -139,5 +143,6 @@ def create_app(config_class: t.Type[Config] = Config):
 
         if click.confirm("Are you sure to drop database?"):
             db.drop_all()
+            logger.info("Successfully drop database")
 
     return app

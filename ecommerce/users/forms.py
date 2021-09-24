@@ -18,32 +18,32 @@ class RegistrationForm(FlaskForm):
     user_name = StringField(
         "User name:",
         validators=[DataRequired()],
-        render_kw={"placeholder": "User name"},
+        render_kw={"placeholder": "user name"},
     )
     full_name = StringField(
         "Full name:",
         validators=[DataRequired()],
-        render_kw={"placeholder": "Full name"},
+        render_kw={"placeholder": "full name"},
     )
     email = StringField(
         "Email:",
         validators=[DataRequired(), Email()],
-        render_kw={"placeholder": "Email"},
+        render_kw={"placeholder": "example@email.com"},
     )
     password = PasswordField(
         "Password:",
         validators=[DataRequired()],
-        render_kw={"placeholder": "Password"},
+        render_kw={"placeholder": "****************"},
     )
     confirm_password = PasswordField(
         "Confirm password:",
-        render_kw={"placeholder": "Confirm password"},
+        render_kw={"placeholder": "****************"},
         validators=[DataRequired(), EqualTo("password")],
     )
     phone = StringField(
         "Phone:",
         validators=[DataRequired(), Length(min=10, max=12)],
-        render_kw={"placeholder": "Phone"},
+        render_kw={"placeholder": "eg: 0973123456.."},
     )
     submit = SubmitField("Sign up")
 
@@ -68,25 +68,31 @@ class LoginForm(FlaskForm):
     email = StringField(
         "Email:",
         validators=[DataRequired(), Email()],
-        render_kw={"placeholder": "Email"},
+        render_kw={"placeholder": "example@email.com"},
     )
     password = PasswordField(
         "Password:",
         validators=[DataRequired()],
-        render_kw={"placeholder": "Password"},
+        render_kw={"placeholder": "****************"},
     )
     submit = SubmitField("Sign in")
-    remember_me = BooleanField("Remember me:")
+    remember_me = BooleanField("Remember me.")
 
 
 class UpdateForm(FlaskForm):
     """Need to input password to update, another fields is not needed"""
 
-    user_name = StringField("Username", validators=[DataRequired()])
-    full_name = StringField(
-        "Full name:", render_kw={"placeholder": "Full name"}
+    user_name = StringField(
+        "Username:",
+        render_kw={"placeholder": "user name"},
+        validators=[DataRequired()],
     )
-    email = StringField("Email:", render_kw={"placeholder": "Email"})
+    full_name = StringField(
+        "Full name:", render_kw={"placeholder": "full name"}
+    )
+    email = StringField(
+        "Email:", render_kw={"placeholder": "example@email.com"}
+    )
     profile_picture = FileField(
         "Update profile picture:",
         validators=[FileAllowed(["jpg", "png", "jpeg"])],
@@ -94,15 +100,15 @@ class UpdateForm(FlaskForm):
     old_password = PasswordField(
         "Old password:",
         validators=[DataRequired()],
-        render_kw={"placeholder": "Old password"},
+        render_kw={"placeholder": "****************"},
     )
     new_password = PasswordField(
-        "New password:", render_kw={"placeholder": "New password"}
+        "New password:", render_kw={"placeholder": "****************"}
     )
     confirm_password = PasswordField(
         "Confirm password:",
         validators=[EqualTo("new_password")],
-        render_kw={"placeholder": "Confirm password"},
+        render_kw={"placeholder": "****************"},
     )
     country = StringField("Country:", render_kw={"placeholder": "Country"})
 
@@ -149,12 +155,12 @@ class ResetPasswordForm(FlaskForm):
     password = PasswordField(
         "Password:",
         validators=[DataRequired()],
-        render_kw={"placeholder": "New password"},
+        render_kw={"placeholder": "****************"},
     )
     confirm_password = PasswordField(
         "Confirm password:",
         validators=[DataRequired(), EqualTo("password")],
-        render_kw={"placeholder": "Confirm password"},
+        render_kw={"placeholder": "****************"},
     )
     submit = SubmitField("Reset")
 
@@ -165,7 +171,7 @@ class SendResetTokenForm(FlaskForm):
     email = StringField(
         "Email:",
         validators=[DataRequired(), Email()],
-        render_kw={"placeholder": "Email"},
+        render_kw={"placeholder": "example@email.com"},
     )
     submit = SubmitField("Send")
 

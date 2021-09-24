@@ -18,9 +18,9 @@
       {{ render_field(form.phone) }}
     </fieldset>
     {{ render_button(form.submit) }}
-    <div class="border-top">
+    <div class="register-redirect">
+      <div></div>
       <small class="text-muted">Already have an account? <a href="{{ url_for('users.login') }}">Sign in</a></small>
-
     </div>
   </form>
 </div>

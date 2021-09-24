@@ -1,21 +1,25 @@
 {# render field #}
 {% macro render_field(field) %}
-<div class="form-group">
-	{{ field.label(class="form-control-label") }}
-  {% if field.errors %}
-    {{ field(class="form-control form-control-sm is-invalid") }}
-    {% for error in field.errors %}
-    	<span>{{ error }}</span>
-	  {% endfor %}
-  {% else %}
-    {{ field(class="form-control form-control-sm") }}
-	{%endif %}
+<div class="field">
+  <div class="field-label">
+    {{ field.label() }}
+  </div>
+  <div class="field-input">
+    {% if field.errors %}
+    	{{ field(class="field-error-input") }}
+      {% for error in field.errors %}
+    	  <span>{{ error }}</span>
+	    {% endfor %}
+    {% else %}
+      {{ field(class="field-normal-input") }}
+    {%endif %}
+  </div>
 </div>
 {% endmacro %}
 
 {# render product #}
 {% macro render_product(product) %}
-<div class="col-sm-3">
+<div>
 	<a href="{{ url_for('products.detail_product', product_id=product.id) }}">
 		<img
 			src="{{ url_for('static', filename='assets/products/' + product.product_image) }}"
@@ -34,7 +38,7 @@
 
 {# render select field #}
 {% macro render_select_field(field) %}
-<div class="form-group">
+<div class="field">
 	{{ field.label(class="form-control-label") }}
   {% if field.errors %}
   {{ field(class="form-control form-control-sm is-invalid") }}
@@ -44,26 +48,6 @@
   {% else %}
     {{ field(class="form-control select-categories") }}
     {% endif %}
-</div>
-{% endmacro %}
-
-{# render file field #}
-{% macro render_file_field(field) %}
-<div class="form-group">
-	{{ field.label() }}
-  {{ field(class="form-control-file") }}
-  {% if field.errors %}
-    {% for error in field.errors %}
-    	<span class="text-danger">{{ error }}</span>
-	  {% endfor %}
-  {% endif %}
-</div>
-{% endmacro %}
-
-{# render button #}
-{% macro render_button(field) %}
-<div class="form-group">
-	{{ field(class="form-btn") }}
 </div>
 {% endmacro %}
 
@@ -79,11 +63,37 @@
 {% endfor %}
 {% endmacro %}
 
+{# render file field #}
+{% macro render_file_field(field) %}
+<div class="field">
+  <div class="field-label">
+    {{ field.label() }}
+  </div>
+	{{ field(class="field-file-input") }}
+  {% if field.errors %}
+    {% for error in field.errors %}
+    	<span class="text-danger">{{ error }}</span>
+	  {% endfor %}
+  {% endif %}
+</div>
+{% endmacro %}
+
+{# render button #}
+{% macro render_button(field) %}
+<div class="btn">
+  <div></div>
+  <div>
+	  {{ field(class="btn-button") }}
+  </div>
+</div>
+{% endmacro %}
+
 {# render check field #}
 {% macro render_check(field) %}
-<div class="form-check">
-	{{ field(class="form-check-input") }}
-  {{ field.label(class="form-check-label") }}
+<div class="check">
+  <div></div>
+	{{ field(class="check-input") }}
+  {{ field.label(class="check-label") }}
 </div>
 {% endmacro %}
 
