@@ -19,6 +19,7 @@ from flask_babel import _
 import os
 import typing as t
 from pathlib import Path
+from ..logs import logger
 
 
 products = Blueprint("products", __name__)
@@ -73,6 +74,7 @@ def add_product():
         for category in added_categories:
             category.products.append(product)
         db.session.commit()
+        logger.info("Added product success.")
         flash(_(f"Add product {product.product_name} success."), "success")
         return redirect(url_for("products.add_product"))
     return render_template(
@@ -127,6 +129,7 @@ def update_product(product_id: t.Optional[int]):
             # add new product to each new category
             category.products.append(product)
         db.session.commit()
+        logger.info("Updated product success.")
         flash(_(f"Product {product.product_name} has been updated."), "success")
         return redirect(url_for("home.index"))
     elif request.method == "GET":
@@ -154,6 +157,7 @@ def detail_product(product_id: t.Optional[str]):
 
     product = db.session.query(Product).get_or_404(product_id)
     categories = db.session.query(Category).all()
+    logger.info("Sent product info.")
     return render_template(
         "product/detail_product.html",
         title=_(f"Product {product.product_name} detail"),
@@ -182,9 +186,11 @@ def delete_product(product_id: t.Optional[int]):
         .resolve()
     )
     os.remove(pic_path)
+
     # then delete product in database
     db.session.delete(product)
     db.session.commit()
-    # os.rmdir(os.path.curdir)
+    logger.info(f"Remove product {product.product_name} success.")
+
     flash(_(f"This product {product_id} has been deleted."), "success")
     return redirect(url_for("home.index"))

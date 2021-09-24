@@ -46,15 +46,18 @@ def send_reset_token(user: t.Optional[int]):
 
 # cart
 def get_cart_info():
+    # not complete yet
     return
 
 
 def remove_ordered_product_from_cart(user_id: t.Optional[int]):
+    # not complete yet
     db.session.query(Cart).filter(Cart.user_id == user_id).delete()
     db.session.commit()
 
 
 def add_ordered_products(user_id: t.Optional[int], order_id: t.Optional[int]):
+    # not complete yet
     """Add products have been ordered to OrderedProduct table"""
     cart = Cart.query.with_entities(Cart.product_id, Cart.quantity).filter(
         Cart.user_id == user_id
@@ -72,6 +75,7 @@ def add_ordered_products(user_id: t.Optional[int], order_id: t.Optional[int]):
 
 # product
 def remove_product_from_cart(product_id: t.Optional[int]):
+    # not complete yet
     userID = (
         User.query.with_entities(User.user_id)
         .filter(User.email == session["email"])
@@ -90,6 +94,7 @@ def remove_product_from_cart(product_id: t.Optional[int]):
 
 
 def get_product_detail(product_id: t.Optional[int]):
+
     return Product.query.filter(Product.product_id == product_id).first_or_404()
 
 

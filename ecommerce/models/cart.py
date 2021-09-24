@@ -13,7 +13,9 @@ class Cart(db.Model):
         nullable=False,
         primary_key=True,
     )
-    product_id = db.Column(db.Integer, db.ForeignKey("product.id"), nullable=True)
+    product_id = db.Column(
+        db.Integer, db.ForeignKey("product.id"), nullable=True
+    )
     quantity = db.Column(db.Integer, nullable=True)
 
     def __repr__(self):
