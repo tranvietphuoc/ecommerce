@@ -16,3 +16,12 @@ def client():
 
     os.close(db_fd)
     os.unlink(db_path)
+
+
+a = [1, 2, 3, 4]
+
+
+def b():
+    global a
+    a.extend([1, 3, 4])
+    print(a)
