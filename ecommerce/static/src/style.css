@@ -26,22 +26,53 @@ body {
 }
 
 /* navbar */
-.nav-settings {
-  @apply flex items-center justify-between flex-wrap bg-blue-100 p-6;
+.navbar {
+  @apply bg-gray-100 fixed inset-x-0;
+}
+.nav-normal {
+  @apply max-w-6xl mx-auto px-4;
+}
+.nav-normal-container {
+  @apply flex justify-between;
+}
+.nav-normal-primary {
+  @apply flex space-x-4
+}
+.nav-normal-primary-nav{
+  @apply hidden md:flex items-center space-x-1;
+}
+.nav-normal-primary-nav > a {
+  @apply py-5 px-3 text-gray-700 hover:text-gray-900;
+}
+.nav-logo {
+  @apply flex items-center py-5 px-2 text-gray-700 hover:text-gray-900;
+}
+.nav-logo > i:nth-child(1) {
+  @apply text-xl mr-1 mb-1 text-blue-400;
+}
+.nav-logo > span {
+  @apply font-bold;
+}
+.nav-secondary {
+  @apply hidden md:flex items-center space-x-1;
+}
+.nav-secondary > a:nth-child(1) {
+  @apply py-5 px-3;
+}
+.nav-secondary > a:nth-child(2) {
+  @apply py-2 px-3 bg-yellow-400 text-white hover:bg-yellow-300;
+  @apply text-sm hover:text-yellow-800 rounded transition duration-300;
 }
 
-.home {
-  @apply flex items-center flex-shrink-0 text-white mr-6;
-}
-
-.home > a {
-  @apply font-semibold text-xl tracking-tight;
+/* main */
+.container {
+  @apply py-32 bg-white h-screen p-3;
 }
 
 /* product-imgage */
 .product-imgage {
-  width: 300;
-  height: 300;
+  width: 300px;
+  height: 300px;
 }
 
 /* media */
@@ -116,7 +147,6 @@ body {
   @apply md:w-2/3 rounded-md;
 }
 
-
 /* check box */
 .check {
   @apply md:flex md:items-center mb-6;
@@ -138,6 +168,7 @@ legend {
   text-align: center;
   margin-bottom: 1em;
 }
+
 
 /* button */
 .btn {
@@ -196,7 +227,3 @@ legend {
   @apply focus:outline-none focus:bg-white focus:border-purple-500;
 }
 
-/* file-field */
-.file-field {
-
-}

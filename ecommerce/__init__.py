@@ -17,6 +17,7 @@ from .categories.routes import categories
 from .carts.routes import carts
 from .home.routes import home
 
+
 # apis blueprints
 from .api.views.pdt import pdt, ProductView, products_view
 import typing as t
