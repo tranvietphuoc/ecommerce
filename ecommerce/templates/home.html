@@ -1,10 +1,5 @@
-{% extends 'base.html' %}
-{% from '_macros.html' import render_categories %}
-{% block title %}Home{% endblock %}
-{% block categories %}
-  {{ render_categories(categories) }}
-{% endblock %}
-{% block content %}
-  <div class="home">
-  </div>
+{% extends 'base.html' %} {% from '_macros.html' import render_categories %} {%
+block title %}Home{% endblock %} {% block categories %} {{
+render_categories(categories) }} {% endblock %} {% block content %}
+<div class="home"></div>
 {% endblock %}

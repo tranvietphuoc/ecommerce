@@ -11,7 +11,7 @@ from wtforms.validators import DataRequired
 
 
 class AddProductForm(FlaskForm):
-    categories = SelectMultipleField("Category", choices=[])
+    categories = SelectMultipleField("Category:", choices=[])
     sku = IntegerField(
         "Product SKU:",
         validators=[DataRequired()],

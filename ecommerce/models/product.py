@@ -4,7 +4,7 @@ from flask import jsonify
 from datetime import datetime
 
 
-# An auxiliary table to perform many-to-many relationship
+# An linking table to perform many-to-many relationship
 # between Product and Category
 products_categories = db.Table(
     "products_categories",
@@ -23,6 +23,7 @@ products_categories = db.Table(
 )
 
 
+# produc table
 class Product(SearchableMixin, db.Model):
     """Product table. Has many-to-many with Category table."""
 
@@ -41,6 +42,7 @@ class Product(SearchableMixin, db.Model):
     product_image = db.Column(db.String(100), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     date_added = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
     # for many-to-one relationship
     # ForeignKey with Category table
     # category_id = db.Column(

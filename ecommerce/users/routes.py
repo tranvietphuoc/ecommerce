@@ -37,6 +37,7 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data)
+
         user = User(
             user_name=form.user_name.data,
             full_name=form.full_name.data,
@@ -50,12 +51,40 @@ def register():
         user_role = db.session.query(Role).filter_by(role_name="user").first()
         user_role.users.append(user)
         db.session.commit()
-        logger.info("Your account have been created.")
         flash(
             _(f"Your account have been created. You are now able to log in."),
             "success",
         )
         return redirect(url_for("users.login"))
+        all_users_phone_numbers = [u.phone for u in db.session.query(User).all()]
+        all_users_emails = [u.email for u in db.session.query(User).all()]
+
+        if form.phone.data in all_users_phone_numbers:
+            flash(_("Phone number already exists in another account"), "danger")
+        elif form.email.data in all_users_emails:
+            flash(_("Email already exists in another account"), "danger")
+        else:
+            user = User(
+                user_name=form.user_name.data,
+                full_name=form.full_name.data,
+                email=form.email.data,
+                password=hashed_password,
+                phone=form.phone.data,
+            )
+            db.session.add(user)
+            db.session.flush()
+
+            # add role for user
+            user_role = db.session.query(Role).filter_by(role_name="user").first()
+            user_role.users.append(user)  # add roles to user
+            db.session.commit()
+            logger.info("Your account have been created.")
+            flash(
+                _(f"Your account have been created. You are now able to log in."),
+                "success",
+            )
+
+            return redirect(url_for("users.login"))
     return render_template(
         "user/register.html",
         title=_("Register"),
@@ -72,6 +101,7 @@ def login():
 
     categories = db.session.query(Category).all()
     form = LoginForm()
+
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user and User.verify_password(form):
@@ -79,11 +109,7 @@ def login():
             login_user(user, remember=form.remember_me.data)
             logger.info("Login success.")
             next_page = request.args.get("next")
-            return (
-                redirect(next_page)
-                if next_page
-                else redirect(url_for("home.index"))
-            )
+            return redirect(next_page) if next_page else redirect(url_for("home.index"))
         else:
             flash(
                 _("Login unsuccessful. Please check your email and password"),
@@ -144,9 +170,7 @@ def about():
         return redirect(url_for("users.about"))
     elif request.method == "GET":
         form.email.data = current_user.email
-    picture = url_for(
-        "static", filename="assets/users/" + current_user.profile_picture
-    )
+    picture = url_for("static", filename="assets/users/" + current_user.profile_picture)
     return render_template(
         "user/about.html",
         title=_("About"),
@@ -168,9 +192,7 @@ def send_reset():
         user = User.query.filter_by(email=form.email.data).first()
         send_reset_token(user)
         logger.info("Success send reset token to email.")
-        flash(
-            _("An email sent with instructions to reset your password."), "info"
-        )
+        flash(_("An email sent with instructions to reset your password."), "info")
         redirect(url_for("users.login"))
     return render_template(
         "user/reset_request.html",

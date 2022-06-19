@@ -4,6 +4,7 @@ from flask_cors import CORS
 import click
 from werkzeug.security import generate_password_hash
 from elasticsearch import Elasticsearch
+from werkzeug.utils import import_string
 from .config import Config
 from .auth.views import AdminView, ModelView
 from .extensions import mail, babel, migrate, login_manager, spec
@@ -99,20 +100,17 @@ def create_app(config_class: t.Optional[t.Type[Config]] = Config):
             db.session.add(Role(role_name="admin"))
             db.session.add(Role(role_name="user"))
             db.session.commit()
+
             # print("Roles have been created.")
-            logger.info("Created roles.")
+            app.logger.info("Created roles.")
 
     @app.cli.command("create")
     @click.argument("superuser")
     def create_superuser(superuser):
         """Create superuser with CLI interface."""
 
-        name = click.prompt(
-            "Enter superuser name.", type=str, default="superuser"
-        )
-        email = click.prompt(
-            "Enter superuser email.", default="superuser@email.com"
-        )
+        name = click.prompt("Enter superuser name.", type=str, default="superuser")
+        email = click.prompt("Enter superuser email.", default="superuser@email.com")
         phone_number = click.prompt(
             "Enter superuser phone number.", default="0111111111"
         )
@@ -132,11 +130,16 @@ def create_app(config_class: t.Optional[t.Type[Config]] = Config):
             )
             superuser_role.users.append(user)
             db.session.commit()
+
             # print(f"User {name} has been created.")
-            logger.info(f"User {name} has been created.")
+            app.logger.info(f"User {name} has been created.")
+
         else:
+
+            print(f"User {name} already existed in database.")
+
             # print(f"User {name} already existed in database.")
-            logger.info(f"User {name} already existed in database.")
+            app.logger.info(f"User {name} already existed in database.")
 
     @app.cli.command("dropdb")
     def drop_db():
@@ -144,6 +147,7 @@ def create_app(config_class: t.Optional[t.Type[Config]] = Config):
 
         if click.confirm("Are you sure to drop database?"):
             db.drop_all()
-            logger.info("Successfully drop database")
+
+            app.logger.info("Successfully drop database")
 
     return app

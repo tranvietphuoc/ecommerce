@@ -9,7 +9,9 @@ from pathlib import Path
 
 
 # Save profile picture
-def save_picture(form_picture: t.Any, user_name: t.Optional[str]):
+
+
+def save_picture(form_picture: t.Any, user_name: t.Optional[str]) -> str:
     file_ext = Path(form_picture.filename).suffix
     picture_name = (
         hashlib.sha256(user_name.encode("utf-8")).hexdigest()[0:16] + file_ext
@@ -50,7 +52,7 @@ def get_cart_info():
     return
 
 
-def remove_ordered_product_from_cart(user_id: t.Optional[int]):
+def remove_order_from_cart(user_id: t.Optional[int]):
     # not complete yet
     db.session.query(Cart).filter(Cart.user_id == user_id).delete()
     db.session.commit()
@@ -98,12 +100,13 @@ def get_product_detail(product_id: t.Optional[int]):
     return Product.query.filter(Product.product_id == product_id).first_or_404()
 
 
-def save_product_image(form_image: t.Any, product_name: t.Optional[str]):
+def save_product_image(form_image: t.Any, product_name: t.Optional[str]) -> str:
+
     # _, file_ext = os.path.splitext(form_image.filename)
     file_ext = Path(form_image.filename).suffix
+
     image_name = (
-        hashlib.sha256(product_name.encode("utf-8")).hexdigest()[0:16]
-        + file_ext
+        hashlib.sha256(product_name.encode("utf-8")).hexdigest()[0:16] + file_ext
     )
     image_path = (
         Path(current_app.root_path)

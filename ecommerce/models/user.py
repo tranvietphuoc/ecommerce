@@ -40,7 +40,7 @@ def unauthorized():
     return redirect(url_for("users.login"))
 
 
-# define an auxiliary table in relationship with Role and User model
+# define an linking table in relationship with Role and User model
 # many-to-many relationship
 users_roles = db.Table(
     "users_roles",
@@ -118,7 +118,7 @@ class User(db.Model, UserMixin, RoleMixin):
     def verify_reset_token(token: t.Optional[str]):
         """Utility for verify reset password token"""
 
-        s = Serializer(current_app.config["SECRET_KEY"])
+        s = Serializer(current_app.secret_key)
         try:
             user_id = s.loads(token)["user_id"]
         except:

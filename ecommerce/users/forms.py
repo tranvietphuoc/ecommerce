@@ -1,12 +1,15 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from flask_wtf.file import FileField, FileAllowed
+
+from wtforms.validators import DataRequired, Length, EqualTo, Email, ValidationError
 from wtforms.validators import (
     DataRequired,
     Length,
     EqualTo,
     Email,
     ValidationError,
+    MacAddress,
 )
 from ..models import User
 from flask_login import current_user
@@ -31,13 +34,17 @@ class RegistrationForm(FlaskForm):
         render_kw={"placeholder": "example@email.com"},
     )
     password = PasswordField(
+
+        "Password:", validators=[DataRequired()], render_kw={"placeholder": "Password"}
         "Password:",
         validators=[DataRequired()],
-        render_kw={"placeholder": "****************"},
+        render_kw={"placeholder": "***************"},
     )
     confirm_password = PasswordField(
         "Confirm password:",
-        render_kw={"placeholder": "****************"},
+
+        render_kw={"placeholder": "Confirm password"},
+        render_kw={"placeholder": "***************"},
         validators=[DataRequired(), EqualTo("password")],
     )
     phone = StringField(
