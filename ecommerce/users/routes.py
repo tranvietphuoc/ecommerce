@@ -20,6 +20,7 @@ from ..models import User, db, Role, Category
 from ..utils import save_picture, send_reset_token
 from flask_babel import _
 import typing as t
+from ..logs import logger
 
 
 users = Blueprint("users", __name__)
@@ -36,26 +37,46 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data)
-        user = User(
-            user_name=form.user_name.data,
-            full_name=form.full_name.data,
-            email=form.email.data,
-            password=hashed_password,
-            phone=form.phone.data,
-        )
-        db.session.add(user)
-        db.session.flush()
-        # add role for user
-        user_role = db.session.query(Role).filter_by(role_name="user").first()
-        user_role.users.append(user)
-        db.session.commit()
-        flash(
-            _(f"Your account have been created. You are now able to log in."),
-            "success",
-        )
-        return redirect(url_for("users.login"))
+        all_users_phone_numbers = [
+            u.phone for u in db.session.query(User).all()
+        ]
+        all_users_emails = [u.email for u in db.session.query(User).all()]
+
+        if form.phone.data in all_users_phone_numbers:
+            flash(_("Phone number already exists in another account"), "danger")
+        elif form.email.data in all_users_emails:
+            flash(_("Email already exists in another account"), "danger")
+        else:
+            user = User(
+                user_name=form.user_name.data,
+                full_name=form.full_name.data,
+                email=form.email.data,
+                password=hashed_password,
+                phone=form.phone.data,
+            )
+            db.session.add(user)
+            db.session.flush()
+
+            # add role for user
+            user_role = (
+                db.session.query(Role).filter_by(role_name="user").first()
+            )
+            user_role.users.append(user)  # add roles to user
+            db.session.commit()
+            logger.info("Your account have been created.")
+            flash(
+                _(
+                    f"Your account have been created. You are now able to log in."
+                ),
+                "success",
+            )
+
+            return redirect(url_for("users.login"))
     return render_template(
-        "user/register.html", title=_("Register"), form=form, categories=categories
+        "user/register.html",
+        title=_("Register"),
+        form=form,
+        categories=categories,
     )
 
 
@@ -63,24 +84,34 @@ def register():
 def login():
     """Log in"""
     if current_user.is_authenticated:
-        return redirect(url_for("main.home"))
+        return redirect(url_for("home.index"))
 
     categories = db.session.query(Category).all()
     form = LoginForm()
+
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user and User.verify_password(form):
             # login to user, add remember_me
             login_user(user, remember=form.remember_me.data)
+            logger.info("Login success.")
             next_page = request.args.get("next")
-            return redirect(next_page) if next_page else redirect(url_for("home.index"))
+            return (
+                redirect(next_page)
+                if next_page
+                else redirect(url_for("home.index"))
+            )
         else:
             flash(
-                _("Login unsuccessful. Please check your email and password"), "danger"
+                _("Login unsuccessful. Please check your email and password"),
+                "danger",
             )
     resp = make_response(
         render_template(
-            "user/login.html", title=_("Sign in"), form=form, categories=categories
+            "user/login.html",
+            title=_("Sign in"),
+            form=form,
+            categories=categories,
         )
     )
     return resp
@@ -90,6 +121,7 @@ def login():
 def logout():
     """Log out"""
     logout_user()
+    logger.info("Logged out.")
     return redirect(url_for("users.login"))
 
 
@@ -124,11 +156,14 @@ def about():
         if form.phone.data:
             current_user.phone = form.phone.data
         db.session.commit()
+        logger.info("Your account have been updated.")
         flash(_("Your account have been updated."), "success")
         return redirect(url_for("users.about"))
     elif request.method == "GET":
         form.email.data = current_user.email
-    picture = url_for("static", filename="assets/users/" + current_user.profile_picture)
+    picture = url_for(
+        "static", filename="assets/users/" + current_user.profile_picture
+    )
     return render_template(
         "user/about.html",
         title=_("About"),
@@ -142,14 +177,17 @@ def about():
 def send_reset():
     """Send reset token to user's email"""
     if current_user.is_authenticated:
-        return redirect(url_for("main.home"))
+        return redirect(url_for("home.index"))
 
     categories = db.session.query(Category).all()
     form = SendResetTokenForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         send_reset_token(user)
-        flash(_("An email sent with instructions to reset your password."), "info")
+        logger.info("Success send reset token to email.")
+        flash(
+            _("An email sent with instructions to reset your password."), "info"
+        )
         redirect(url_for("users.login"))
     return render_template(
         "user/reset_request.html",
@@ -163,7 +201,7 @@ def send_reset():
 def reset_password(token: t.Optional[str]):
     """Confirm reset token and save new password"""
     if current_user.is_authenticated:
-        return redirect(url_for("main.home"))
+        return redirect(url_for("home.index"))
     user = User.verify_reset_token(token)  # verify reset token
     if not user:
         flash(_("This token is invalid."), "warning")
@@ -174,6 +212,7 @@ def reset_password(token: t.Optional[str]):
     if form.validate_on_submit():
         user.password = generate_password_hash(form.password.data)
         db.session.commit()
+        logger.info("Reset password success.")
         flash(
             _("Your password have been updated. You are now able to login."),
             "success",

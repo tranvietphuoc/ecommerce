@@ -1,3 +1,4 @@
+from ecommerce.extensions import spec
 from flask import Blueprint, json
 from ecommerce.models import Product, db, Category
 from ..schemas import ProductSchema
@@ -5,7 +6,6 @@ from ..encoders import DecimalEncoder
 from sqlalchemy import select
 from flask_cors import cross_origin
 from flask.views import MethodView
-from ecommerce.extensions import spec
 
 
 pdt = Blueprint("pdt", __name__, url_prefix="/api/v1/product")

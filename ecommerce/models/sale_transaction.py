@@ -14,7 +14,6 @@ class SaleTransaction(db.Model):
     cc_number = db.Column(db.String(50), nullable=False)
     cc_type = db.Column(db.String(50), nullable=False)
     response = db.Column(db.String(50), nullable=False)
-    response = db.Column(db.String(50), nullable=False)
 
     def __repr__(self):
         return f"<OrderTransaction('{self.id}', '{self.order_id}',\

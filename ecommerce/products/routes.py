@@ -6,6 +6,7 @@ from flask import (
     redirect,
     url_for,
     request,
+    current_app,
 )
 from ..models import db, Product, Category
 from flask_login import current_user
@@ -17,6 +18,8 @@ from ..utils import save_product_image
 from flask_babel import _
 import os
 import typing as t
+from pathlib import Path
+from ..logs import logger
 
 
 products = Blueprint("products", __name__)
@@ -71,6 +74,7 @@ def add_product():
         for category in added_categories:
             category.products.append(product)
         db.session.commit()
+        logger.info("Added product success.")
         flash(_(f"Add product {product.product_name} success."), "success")
         return redirect(url_for("products.add_product"))
     return render_template(
@@ -81,7 +85,9 @@ def add_product():
     )
 
 
-@products.route("/admin/products/<int:product_id>/update", methods=("GET", "POST"))
+@products.route(
+    "/admin/products/<int:product_id>/update", methods=("GET", "POST")
+)
 def update_product(product_id: t.Optional[int]):
     """Update informations of product with product_id. Only for superuser."""
 
@@ -115,7 +121,6 @@ def update_product(product_id: t.Optional[int]):
             db.session.query(Category).filter_by(category_name=category).first()
             for category in form.categories.data
         ]
-        print(updated_categories)
         # add new category to product
         for category in updated_categories:
             # check if updated category exists in product categories
@@ -124,8 +129,9 @@ def update_product(product_id: t.Optional[int]):
             # add new product to each new category
             category.products.append(product)
         db.session.commit()
+        logger.info("Updated product success.")
         flash(_(f"Product {product.product_name} has been updated."), "success")
-        return redirect(url_for("main.home"))
+        return redirect(url_for("home.index"))
     elif request.method == "GET":
         form.product_name.data = product.product_name
         form.sku.data = product.sku
@@ -142,7 +148,7 @@ def update_product(product_id: t.Optional[int]):
             product_id=product_id,
             categories=categories_query,
         )
-    return redirect(url_for("main.home"))
+    return redirect(url_for("home.index"))
 
 
 @products.route("/products/<int:product_id>/detail", methods=("GET", "POST"))
@@ -151,6 +157,7 @@ def detail_product(product_id: t.Optional[str]):
 
     product = db.session.query(Product).get_or_404(product_id)
     categories = db.session.query(Category).all()
+    logger.info("Sent product info.")
     return render_template(
         "product/detail_product.html",
         title=_(f"Product {product.product_name} detail"),
@@ -159,7 +166,9 @@ def detail_product(product_id: t.Optional[str]):
     )
 
 
-@products.route("/admin/products/<int:product_id>/delete", methods=("GET", "POST"))
+@products.route(
+    "/admin/products/<int:product_id>/delete", methods=("GET", "POST")
+)
 def delete_product(product_id: t.Optional[int]):
     """Delete a particular product by product_id. Only superuser can do that."""
 
@@ -170,13 +179,18 @@ def delete_product(product_id: t.Optional[int]):
             abort(403)
     product = db.session.query(Product).get_or_404(product_id)
     # remove product picture
-    pic_dir = os.path.join(
-        os.path.abspath(os.getcwd()), "ecommerce/static/assets/products/"
+    pic_path = (
+        Path(current_app.root_path)
+        .joinpath("static/assets/products")
+        .joinpath(product.product_image)
+        .resolve()
     )
-    os.remove(os.path.join(pic_dir, product.product_image))
+    os.remove(pic_path)
+
     # then delete product in database
     db.session.delete(product)
     db.session.commit()
-    # os.rmdir(os.path.curdir)
+    logger.info(f"Remove product {product.product_name} success.")
+
     flash(_(f"This product {product_id} has been deleted."), "success")
-    return redirect(url_for("main.home"))
+    return redirect(url_for("home.index"))

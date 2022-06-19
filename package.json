@@ -1,0 +1,11 @@
+{
+  "devDependencies": {
+    "nodemon": "^2.0.12",
+    "tailwindcss": "^2.2.15"
+  },
+  "scripts": {
+    "start": "nodemon manage.py",
+    "build-css": "npx tailwindcss-cli@latest build -i ./ecommerce/static/src/style.css -o ./ecommerce/static/css/main.css"
+  },
+  "dependencies": {}
+}

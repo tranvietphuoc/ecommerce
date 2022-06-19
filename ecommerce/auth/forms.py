@@ -30,7 +30,9 @@ class RegistrationForm(FlaskForm):
         render_kw={"placeholder": "Email"},
     )
     password = PasswordField(
-        "Password:", validators=[DataRequired()], render_kw={"placeholder": "Password"}
+        "Password:",
+        validators=[DataRequired()],
+        render_kw={"placeholder": "Password"},
     )
     confirm_password = PasswordField(
         "Confirm password:",
@@ -68,7 +70,9 @@ class LoginForm(FlaskForm):
         render_kw={"placeholder": "Email"},
     )
     password = PasswordField(
-        "Password:", validators=[DataRequired()], render_kw={"placeholder": "Password"}
+        "Password:",
+        validators=[DataRequired()],
+        render_kw={"placeholder": "Password"},
     )
     submit = SubmitField("Sign in")
     remember_me = BooleanField("Remember me:")
@@ -77,10 +81,13 @@ class LoginForm(FlaskForm):
 class UpdateForm(FlaskForm):
     """Need to input password to update, another fields is not needed"""
 
-    full_name = StringField("Full name:", render_kw={"placeholder": "Full name"})
+    full_name = StringField(
+        "Full name:", render_kw={"placeholder": "Full name"}
+    )
     email = StringField("Email:", render_kw={"placeholder": "Email"})
     profile_picture = FileField(
-        "Update profile picture:", validators=[FileAllowed(["jpg", "png", "jpeg"])]
+        "Update profile picture:",
+        validators=[FileAllowed(["jpg", "png", "jpeg"])],
     )
     old_password = PasswordField(
         "Old password:",
@@ -111,12 +118,16 @@ class UpdateForm(FlaskForm):
     def validate_password(self, old_password):
         o_pw_h = generate_password_hash(old_password.data).decode("utf-8")
         if not check_password_hash(o_pw_h, current_user.password):
-            raise ValidationError("Your old password is incorrect. Please try again.")
+            raise ValidationError(
+                "Your old password is incorrect. Please try again."
+            )
 
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
         if user:
-            raise ValidationError("This email is taken. Please choose another one.")
+            raise ValidationError(
+                "This email is taken. Please choose another one."
+            )
 
 
 class ResetPasswordForm(FlaskForm):

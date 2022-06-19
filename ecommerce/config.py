@@ -12,8 +12,7 @@ import tempfile
 from pathlib import Path
 
 
-base = Path(__file__).resolve().parent  # ../Ecommerce/ecommerce
-project = base.joinpath(base.parent)  # ../Ecommerce
+project = Path(__file__).parent.parent  # __file__ in .../Ecommerce/ecommerce/
 env = project.joinpath(".env").resolve()  # get abspath for .env
 load_dotenv(env, override=True)
 API_TITLE = os.getenv("API_TITLE")

@@ -1,4 +1,12 @@
-from flask import Blueprint, render_template, request, g, redirect, url_for, current_app
+from flask import (
+    Blueprint,
+    render_template,
+    request,
+    g,
+    redirect,
+    url_for,
+    current_app,
+)
 from ..models import db, Category, Product
 from .forms import SearchForm
 from flask_login import current_user
