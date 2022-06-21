@@ -21,7 +21,6 @@ jedi = "^0.18.0"
 flake8 = "^3.8.4"
 python-dotenv = "^0.15.0"
 email-validator = "^1.1.2"
-psycopg2 = "^2.8.6"
 pytest = "^6.2.4"
 Flask-Security = "^3.0.0"
 Flask = "2"
@@ -30,6 +29,7 @@ marshmallow-sqlalchemy = "^0.26.1"
 apispec = "^5.1.0"
 Flask-Cors = "^3.0.10"
 apispec-webframeworks = "^0.5.2"
+psycopg2-binary = "^2.9.3"
 
 [tool.poetry.dev-dependencies]
 

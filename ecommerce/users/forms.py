@@ -35,7 +35,6 @@ class RegistrationForm(FlaskForm):
     )
     password = PasswordField(
 
-        "Password:", validators=[DataRequired()], render_kw={"placeholder": "Password"}
         "Password:",
         validators=[DataRequired()],
         render_kw={"placeholder": "***************"},
@@ -43,7 +42,6 @@ class RegistrationForm(FlaskForm):
     confirm_password = PasswordField(
         "Confirm password:",
 
-        render_kw={"placeholder": "Confirm password"},
         render_kw={"placeholder": "***************"},
         validators=[DataRequired(), EqualTo("password")],
     )
