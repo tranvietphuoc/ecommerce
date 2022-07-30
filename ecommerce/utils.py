@@ -9,8 +9,6 @@ from pathlib import Path
 
 
 # Save profile picture
-
-
 def save_picture(form_picture: t.Any, user_name: t.Optional[str]) -> str:
     file_ext = Path(form_picture.filename).suffix
     picture_name = (
@@ -106,7 +104,8 @@ def save_product_image(form_image: t.Any, product_name: t.Optional[str]) -> str:
     file_ext = Path(form_image.filename).suffix
 
     image_name = (
-        hashlib.sha256(product_name.encode("utf-8")).hexdigest()[0:16] + file_ext
+        hashlib.sha256(product_name.encode("utf-8")).hexdigest()[0:16]
+        + file_ext
     )
     image_path = (
         Path(current_app.root_path)

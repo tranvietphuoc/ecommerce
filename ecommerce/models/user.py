@@ -100,10 +100,10 @@ class User(db.Model, UserMixin, RoleMixin):
         return jsonify({"name": self.first_name + self.last_name})
 
     # define a method to get reset token, life time is 30 minutes
-    def get_reset_token(self, expire_secs=1800):
+    def get_reset_token(self, expire=1800):
         """Send a verify token to user's email."""
 
-        s = Serializer(current_app.config["SECRET_KEY"], expire_secs)
+        s = Serializer(current_app.secret_key)  # exprire = 1800 s
         return s.dumps({"user_id": self.get_id()}).decode("utf-8")
 
     @staticmethod
