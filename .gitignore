@@ -1,3 +1,8 @@
-.venv/
-*.pyc
-*.png
+.venv
+.dockerignore
+__pycache__/
+.mypy_cache
+.git
+.gitignore
+*.sqlite3
+*.py[cod]

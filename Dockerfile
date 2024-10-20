@@ -1,21 +1,23 @@
-FROM python:3.9-alpine
+FROM python:3.10-slim-bullseye
 
-WORKDIR /usr/src/app
-
-# set environment variables
+ENV PIP_DISABLE_PIP_VERSION_CHECK 1
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# install dependencies
-RUN pip3 install --upgrade pip
-COPY ./requirements.txt /usr/src/app/requirements.txt
-RUN pip3 install -r requirements.txt
 
-# copy project files
-COPY . /usr/src/app/
+WORKDIR /backend
 
-CMD ["sh", "run.sh"]
+COPY ./requirements.txt .
 
-VOLUME /app
+RUN apt-get update -y && \
+    apt-get install -y netcat && \
+    pip install --upgrade pip && \
+    pip install -r requirements.txt
 
-EXPOSE 5000
+COPY ./entrypoint.sh .
+RUN ["chmod", "+x",  "/backend/entrypoint.sh"]
+
+COPY . .
+
+ENTRYPOINT ["sh", "-c" ,"/backend/entrypoint.sh"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

@@ -1,45 +1,43 @@
-version: "3.0"
-sevices:
-
-  elasticsearch:
-    image: elasticsearch:7.14.0
-    environment:
-      - discovery.type=single-node
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    unlimits:
-      memlocks:
-        soft: -1
-        hard: -1
-    volumes:
-      esdata:/usr/share/elasticsearch/data
-    ports:
-      - 9200:9200
 
 
-  web:
-    build:
-      context: ./services/web
-      command: sh run.sh
-      volumes:
-        - ./services/web/:/usr/src/app/
-      ports:
-        - 5000:5000
-      env_file:
-        - ./.env
-      dockerfile: Dockerfile
+services:
+  web: 
+    build: . 
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes: 
+      - .:/backend
+    env_file: 
+      - ./.env 
+    ports: 
+      - "8000:8000"
+    depends_on: 
+      - redis 
+      - db
 
-      depends_on:
-        - db
-
-  db:
-    image: postgres:13-alpine
-    volumes:
+  db: 
+    image: postgres:13
+    volumes: 
       - postgres_data:/var/lib/postgresql/data/
-    restart: always
-    environment:
-      - POSTGRES_USER=flask_app
-      - POSTGRES_PASSWORD=testpassword
-      - POSTGRES_DB=flask_app_dev
-volumes:
+    environment: 
+      - "POSTGRES_HOST_AUTH_METHOD=trust"
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+
+  redis: 
+    image: redis:latest
+
+  celery: 
+    build: . 
+    command: celery -A config worker -l info
+    volumes: 
+      - .:/backend
+    env_file: 
+      - ./.env 
+    depends_on: 
+      - db 
+      - redis 
+      - web
+
+volumes: 
   postgres_data:
