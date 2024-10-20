@@ -2,13 +2,16 @@
 
 echo 'waiting for postgres...'
 
-while ! nc -z $DB_HOSTNAME $DB_PORT; do 
+while ! nc -z $DB_HOST $DB_PORT; do
+
     sleep 0.1
-done 
+
+done
 
 echo 'PostgreSQL started'
 
 echo 'running migration...'
+# python manage.py makemigrations
 python manage.py migrate
 
 echo 'collecting static files...'

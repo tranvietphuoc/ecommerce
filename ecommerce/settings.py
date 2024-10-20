@@ -27,7 +27,7 @@ SECRET_KEY = config("DJANGO_SECRET")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = config("DJANGO_ALLOWED_HOSTS").split(" ")
+ALLOWED_HOSTS = config("DJANGO_ALLOWED_HOSTS").split(",")
 
 
 # Application definition
@@ -98,21 +98,14 @@ WSGI_APPLICATION = "ecommerce.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DB_ENGINE = config("DB_ENGINE")
-DB_NAME = config("DB_NAME")
-DB_USER = config("DB_USERNAME")
-DB_PASSWORD = config("DB_PASSWORD")
-DB_HOSTNAME = config("DB_HOSTNAME")
-DB_PORT = config("DB_PORT")
-
 DATABASES = {
     "default": {
-        "ENGINE": os.environ.get(DB_ENGINE, "django.db.backends.sqlite3"),
-        "NAME": os.environ.get(DB_NAME, BASE_DIR / "db.sqlite3"),
-        "USER": os.environ.get(DB_USER, "admin"),
-        "PASSWORD": os.environ.get(DB_PASSWORD, "password"),
-        "HOST": os.environ.get(DB_HOSTNAME, "localhost"),
-        "PORT": os.environ.get(DB_PORT, "5432"),
+        "ENGINE": config("DB_ENGINE"),
+        "NAME": config("DB_NAME"),
+        "USER": config("DB_USER"),
+        "PASSWORD": config("DB_PASS"),
+        "HOST": config("DB_HOST"),
+        "PORT": config("DB_PORT"),
     }
 }
 

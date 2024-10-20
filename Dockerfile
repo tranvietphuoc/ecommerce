@@ -5,7 +5,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 
-WORKDIR /backend
+WORKDIR /src
 
 COPY ./requirements.txt .
 
@@ -15,9 +15,9 @@ RUN apt-get update -y && \
     pip install -r requirements.txt
 
 COPY ./entrypoint.sh .
-RUN ["chmod", "+x",  "/backend/entrypoint.sh"]
+RUN ["chmod", "+x",  "/src/entrypoint.sh"]
 
 COPY . .
 
-ENTRYPOINT ["sh", "-c" ,"/backend/entrypoint.sh"]
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+ENTRYPOINT ["sh", "-c" ,"/src/entrypoint.sh"]
+# CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
