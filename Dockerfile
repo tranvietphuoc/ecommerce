@@ -7,17 +7,16 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /src
 
-COPY ./requirements.txt .
-
+COPY ./requirements.txt /src/
 RUN apt-get update -y && \
     apt-get install -y netcat && \
     pip install --upgrade pip && \
     pip install -r requirements.txt
 
-COPY ./entrypoint.sh .
+COPY ./entrypoint.sh /src/
 RUN ["chmod", "+x",  "/src/entrypoint.sh"]
 
-COPY . .
+COPY . /src/
 
 ENTRYPOINT ["sh", "-c" ,"/src/entrypoint.sh"]
-# CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

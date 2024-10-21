@@ -12,7 +12,7 @@ echo 'PostgreSQL started'
 
 echo 'running migration...'
 # python manage.py makemigrations
-python manage.py migrate
+python manage.py migrate --fake-initial
 
 echo 'collecting static files...'
 python manage.py collectstatic --no-input

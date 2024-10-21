@@ -61,5 +61,4 @@ class OrderViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action in ("update", "parital_update", "destroy"):
             self.permission_classes += [IsOrderPending]
-
         return super().get_permissions()
