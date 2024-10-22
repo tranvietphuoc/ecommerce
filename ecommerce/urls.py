@@ -39,17 +39,15 @@ from users.views import GoogleLogin
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/v1/users/", include("users.urls", namespace="users")),
-    path("api/v1/products/", include("products.urls", namespace="products")),
-    path("api/v1/users/orders/", include("orders.urls", namespace="orders")),
-    path(
-        "api/v1/users/payment/", include("payment.urls", namespace="payment")
-    ),
+    path("api/users/", include("users.urls", namespace="users")),
+    path("api/products/", include("products.urls", namespace="products")),
+    path("api/users/orders/", include("orders.urls", namespace="orders")),
+    path("api/users/payment/", include("payment.urls", namespace="payment")),
     path(
         "api-auth/", include("rest_framework.urls", namespace="rest_framework")
     ),
     path(
-        "api/v1/resend-email/",
+        "api/resend-email/",
         ResendEmailVerificationView.as_view(),
         name="rest_resend_email",
     ),
@@ -89,8 +87,8 @@ urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # Schema URLs
 urlpatterns += [
     path(
-        "api/v1/schema/",
-        SpectacularAPIView.as_view(api_version="v1"),
+        "api/schema/",
+        SpectacularAPIView.as_view(api_version="1.0"),
         name="schema",
     ),
     path(
