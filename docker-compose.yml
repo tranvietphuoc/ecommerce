@@ -1,9 +1,8 @@
 services:
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
     # command: gunicorn ecommerce.wsgi:application --bind 0.0.0.0:8000
-
     volumes:
       - .:/src
     env_file:
@@ -17,6 +16,7 @@ services:
       # - 8000
   db:
     image: postgres:13
+
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
@@ -32,15 +32,14 @@ services:
   celery:
     build: .
     command: celery -A config worker -l info
+
     volumes:
       - .:/src
     env_file:
       - ./.env
     depends_on:
-
       - db
       - redis
-      - web
 
 volumes:
   postgres_data:
