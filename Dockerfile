@@ -11,12 +11,15 @@ COPY ./requirements.txt /src/
 RUN apt-get update -y && \
     apt-get install -y netcat && \
     pip install --upgrade pip && \
-    pip install -r requirements.txt
+    pip install -r requirements.txt --no-cache-dir
 
 COPY ./entrypoint.sh /src/
-RUN ["chmod", "+x",  "/src/entrypoint.sh"]
+RUN chmod +x /src/entrypoint.sh
 
 COPY . /src/
 
+
+# Expose the app port
+EXPOSE 8000
+
 ENTRYPOINT ["sh", "-c" ,"/src/entrypoint.sh"]
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
