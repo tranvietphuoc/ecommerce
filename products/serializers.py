@@ -23,7 +23,7 @@ class ProductReadSerializer(serializers.ModelSerializer):
     category = serializers.CharField(source="category.name", read_only=True)
 
     class Meta:
-        model = (Product,)
+        model = Product
         fields = "__all__"
 
 

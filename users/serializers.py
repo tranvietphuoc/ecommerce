@@ -62,9 +62,9 @@ class UserRegistrationSerializer(RegisterSerializer):
 
     def get_cleaned_data_extra(self):
         return {
-            "phone_number": self.validated_data.get("phone_number"),
-            "first_name": self.validated_data.get("first_name"),
-            "last_name": self.validated_data.get("last_name"),
+            "phone_number": self.validated_data.get("phone_number", ""),
+            "first_name": self.validated_data.get("first_name", ""),
+            "last_name": self.validated_data.get("last_name", ""),
         }
 
     def create_extra(self, user, validated_data):
@@ -182,7 +182,7 @@ class VerifyPhoneNumberSerializer(serializers.Serializer):
         phone_number = str(validated_data.get("phone_number"))
         otp = validated_data.get("otp")
 
-        queryset = PhoneNumber.object.get(phone_number=phone_number)
+        queryset = PhoneNumber.objects.get(phone_number=phone_number)
         queryset.check_verification(security_code=otp)
 
         return validated_data

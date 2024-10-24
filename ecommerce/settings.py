@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     "dj_rest_auth.registration",
     "phonenumber_field",
     "corsheaders",
-    "drf_spectacular",
+    "drf_spectacular",  # swagger openapi
     # apps
     "users",
     "products",
@@ -222,7 +222,7 @@ CELERY_RESULT_BACKEND = config("REDIS_BACKEND")
 SPECTACULAR_SETTINGS = {
     "TITLE": "Ecommerce API",
     "DESCRIPTION": "An Ecommerce API built using Django Rest Framework",
-    "VERSION": "1.0.0",
+    "VERSION": "1.0",
     "SERVE_INCLUDE_SCHEMA": False,
 }
 

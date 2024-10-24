@@ -61,6 +61,7 @@ django==5.1.2
     #   django-allauth
     #   django-cors-headers
     #   django-phonenumber-field
+    #   django-redis
     #   djangorestframework
     #   djangorestframework-simplejwt
     #   drf-spectacular
@@ -73,6 +74,8 @@ django-countries==7.6.1
 django-phonenumber-field==8.0.0
     # via ecommerce (pyproject.toml)
 django-phonenumbers==1.0.1
+    # via ecommerce (pyproject.toml)
+django-redis==5.4.0
     # via ecommerce (pyproject.toml)
 django-rest-framework==0.1.0
     # via ecommerce (pyproject.toml)
@@ -109,7 +112,9 @@ multidict==6.1.0
     #   aiohttp
     #   yarl
 phonenumbers==8.13.47
-    # via django-phonenumbers
+    # via
+    #   ecommerce (pyproject.toml)
+    #   django-phonenumbers
 pillow==11.0.0
     # via ecommerce (pyproject.toml)
 prompt-toolkit==3.0.48
@@ -137,7 +142,7 @@ python-decouple==3.8
 pyyaml==6.0.2
     # via drf-spectacular
 redis==5.1.1
-    # via ecommerce (pyproject.toml)
+    # via django-redis
 referencing==0.35.1
     # via
     #   jsonschema

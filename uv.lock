@@ -500,6 +500,19 @@ wheels = [
 ]
 
 [[package]]
+name = "django-redis"
+version = "5.4.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+    { name = "redis" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/83/9d/2272742fdd9d0a9f0b28cd995b0539430c9467a2192e4de2cea9ea6ad38c/django-redis-5.4.0.tar.gz", hash = "sha256:6a02abaa34b0fea8bf9b707d2c363ab6adc7409950b2db93602e6cb292818c42", size = 52567 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b7/f1/63caad7c9222c26a62082f4f777de26389233b7574629996098bf6d25a4d/django_redis-5.4.0-py3-none-any.whl", hash = "sha256:ebc88df7da810732e2af9987f7f426c96204bf89319df4c6da6ca9a2942edd5b", size = 31119 },
+]
+
+[[package]]
 name = "django-rest-framework"
 version = "0.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -565,6 +578,7 @@ dependencies = [
     { name = "django-countries" },
     { name = "django-phonenumber-field" },
     { name = "django-phonenumbers" },
+    { name = "django-redis" },
     { name = "django-rest-framework" },
     { name = "djangorestframework-simplejwt" },
     { name = "drf-spectacular" },
@@ -573,7 +587,6 @@ dependencies = [
     { name = "pillow" },
     { name = "psycopg2-binary" },
     { name = "python-decouple" },
-    { name = "redis" },
     { name = "twilio" },
 ]
 
@@ -588,6 +601,7 @@ requires-dist = [
     { name = "django-countries", specifier = ">=7.6.1" },
     { name = "django-phonenumber-field", specifier = ">=8.0.0" },
     { name = "django-phonenumbers", specifier = ">=1.0.1" },
+    { name = "django-redis", specifier = ">=5.4.0" },
     { name = "django-rest-framework", specifier = ">=0.1.0" },
     { name = "djangorestframework-simplejwt", specifier = ">=5.3.1" },
     { name = "drf-spectacular", specifier = ">=0.27.2" },
@@ -596,7 +610,6 @@ requires-dist = [
     { name = "pillow", specifier = ">=11.0.0" },
     { name = "psycopg2-binary", specifier = ">=2.9.10" },
     { name = "python-decouple", specifier = ">=3.8" },
-    { name = "redis", specifier = ">=5.1.1" },
     { name = "twilio", specifier = ">=9.3.4" },
 ]
 
