@@ -195,7 +195,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        field = (
+        fields = (
             "avatar",
             "bio",
             "created_at",
@@ -249,7 +249,7 @@ class ShippingAddressSerializer(
     class Meta:
         model = Address
         fields = "__all__"
-        read_only_fields = "address_type"
+        read_only_fields = ("address_type",)
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -268,7 +268,7 @@ class BillingAddressSerializer(CountryFieldMixin, serializers.ModelSerializer):
     class Meta:
         model = Address
         fields = "__all__"
-        read_only_fields = "address_type"
+        read_only_fields = ("address_type",)
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)

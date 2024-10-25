@@ -30,8 +30,16 @@ class Order(models.Model):
         null=True,
     )
 
+    billing_address = models.ForeignKey(
+        Address,
+        related_name="billing_orders",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
-    udpated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ("-created_at",)

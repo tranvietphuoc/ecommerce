@@ -54,7 +54,7 @@ class PaymentOptionSerializer(serializers.ModelSerializer):
             "updated_at",
         )
 
-        read_only_field = (
+        read_only_fields = (
             "status",
             "order",
         )

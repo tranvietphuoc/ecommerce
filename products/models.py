@@ -47,7 +47,7 @@ class Product(models.Model):
     desc = models.TextField(_("Description"), blank=True)
     image = models.ImageField(upload_to=products_image_path, blank=True)
     price = models.DecimalField(decimal_places=2, max_digits=10)
-    quanity = models.IntegerField(default=1)
+    quantity = models.IntegerField(default=1)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
