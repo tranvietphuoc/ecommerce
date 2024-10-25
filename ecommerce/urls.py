@@ -38,46 +38,44 @@ from users.views import GoogleLogin
 
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("api/users/", include("users.urls", namespace="users")),
-    path("api/products/", include("products.urls", namespace="products")),
-    path("api/users/orders/", include("orders.urls", namespace="orders")),
-    path("api/users/payment/", include("payment.urls", namespace="payment")),
+    path('admin/', admin.site.urls),
+    path('api/users/', include('users.urls', namespace='users')),
+    path('api/products/', include('products.urls', namespace='products')),
+    path('api/users/orders/', include('orders.urls', namespace='orders')),
+    path('api/users/payment/', include('payment.urls', namespace='payment')),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path(
-        "api-auth/", include("rest_framework.urls", namespace="rest_framework")
-    ),
-    path(
-        "api/resend-email/",
+        'api/resend-email/',
         ResendEmailVerificationView.as_view(),
-        name="rest_resend_email",
+        name='rest_resend_email',
     ),
     re_path(
-        r"^account-confirm-email/(?P<key>[-:\w]+)/$",
+        r'^account-confirm-email/(?P<key>[-:\w]+)/$',
         VerifyEmailView.as_view(),
-        name="account-confirm-email",
+        name='account-confirm-email',
     ),
     path(
-        "account-email-verification-sent/",
+        'account-email-verification-sent/',
         TemplateView.as_view(),
-        name="account-email-verification-sent",
+        name='account-email-verification-sent',
     ),
-    path("users/login/google/", GoogleLogin.as_view(), name="google_login"),
+    path('users/login/google/', GoogleLogin.as_view(), name='google_login'),
     path(
-        "password/reset/",
+        'password/reset/',
         PasswordResetView.as_view(),
-        name="rest_password_reset",
+        name='rest_password_reset',
     ),
     path(
-        "password/reset/confirm/<str:uidb64>/<str:token>",
+        'password/reset/confirm/<str:uidb64>/<str:token>',
         PasswordResetConfirmView.as_view(),
-        name="password_reset_confirm",
+        name='password_reset_confirm',
     ),
     path(
-        "password/change/",
+        'password/change/',
         PasswordChangeView.as_view(),
-        name="rest_password_change",
+        name='rest_password_change',
     ),
-    path("logout/", LogoutView.as_view(), name="rest_logout"),
+    path('logout/', LogoutView.as_view(), name='rest_logout'),
 ]
 
 # Media Assets
@@ -87,13 +85,13 @@ urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # Schema URLs
 urlpatterns += [
     path(
-        "api/schema/",
-        SpectacularAPIView.as_view(api_version="1.0"),
-        name="schema",
+        'api/schema/',
+        SpectacularAPIView.as_view(api_version='1.0'),
+        name='schema',
     ),
     path(
-        "",
-        SpectacularSwaggerView.as_view(url_name="schema"),
-        name="swagger-ui",
+        '',
+        SpectacularSwaggerView.as_view(url_name='schema'),
+        name='swagger-ui',
     ),
 ]

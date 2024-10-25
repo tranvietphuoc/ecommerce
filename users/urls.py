@@ -11,26 +11,22 @@ from .views import (
     VerifyPhoneNumberAPIView,
 )
 
-app_name = "users"
+app_name = 'users'
 
 router = DefaultRouter()
-router.register(r"", AddressViewSet)
+router.register(r'', AddressViewSet)
 
 
 urlpatterns = [
+    path('register/', UserRegisterationAPIView.as_view(), name='user_register'),
+    path('login/', UserLoginAPIView.as_view(), name='user_login'),
+    path('send-sms/', SendOrResendSMSAPIView.as_view(), name='send_resend_sms'),
     path(
-        "register/", UserRegisterationAPIView.as_view(), name="user_register"
-    ),
-    path("login/", UserLoginAPIView.as_view(), name="user_login"),
-    path(
-        "send-sms/", SendOrResendSMSAPIView.as_view(), name="send_resend_sms"
-    ),
-    path(
-        "verify-phone/",
+        'verify-phone/',
         VerifyPhoneNumberAPIView.as_view(),
-        name="verify_phone_number",
+        name='verify_phone_number',
     ),
-    path("", UserAPIView.as_view(), name="user_detail"),
-    path("profile/", ProfileAPIView.as_view(), name="profile_detail"),
-    path("profile/address/", include(router.urls)),
+    path('', UserAPIView.as_view(), name='user_detail'),
+    path('profile/', ProfileAPIView.as_view(), name='profile_detail'),
+    path('profile/address/', include(router.urls)),
 ]

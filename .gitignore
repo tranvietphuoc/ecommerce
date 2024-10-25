@@ -2,6 +2,7 @@
 .dockerignore
 __pycache__/
 .mypy_cache
+.ruff_cache
 .git
 .gitignore
 *.sqlite3

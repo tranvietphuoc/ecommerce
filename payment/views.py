@@ -36,7 +36,7 @@ class PaymentViewSet(ModelViewSet):
         return res.filter(order__buyer=user)
 
     def get_permissions(self):
-        if self.action in ("update", "partial_update", "destroy"):
+        if self.action in ('update', 'partial_update', 'destroy'):
             self.permission_classes += [IsPaymentPending]
 
         return super().get_permissions()
@@ -53,6 +53,6 @@ class CheckoutAPIView(RetrieveUpdateAPIView):
     permission_classes = [IsOrderByBuyerOrAdmin]
 
     def get_permissions(self):
-        if self.request.method in ("PUT", "PATCH"):
+        if self.request.method in ('PUT', 'PATCH'):
             self.permission_classes += [IsOrderPendingWhenCheckOut]
         return super().get_permissions()

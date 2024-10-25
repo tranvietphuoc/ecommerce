@@ -7,12 +7,12 @@ from payment.views import (
 )
 
 
-app_name = "payment"
+app_name = 'payment'
 
 router = DefaultRouter()
-router.register(r"", PaymentViewSet)
+router.register(r'', PaymentViewSet)
 
 urlpatterns = [
-    path("", include(router.urls)),
-    path("checkout/<int:pk>/", CheckoutAPIView.as_view(), name="checkout"),
+    path('', include(router.urls)),
+    path('checkout/<int:pk>/', CheckoutAPIView.as_view(), name='checkout'),
 ]

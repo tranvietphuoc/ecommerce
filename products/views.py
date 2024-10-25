@@ -28,15 +28,15 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
 
     def get_serializer(self, *args, **kwargs):
-        if self.action in ("create", "update", "parital_update", "destroy"):
+        if self.action in ('create', 'update', 'parital_update', 'destroy'):
             return ProductWriteSerializer
 
         return ProductReadSerializer
 
     def get_permissions(self):
-        if self.action in ("create",):
+        if self.action in ('create',):
             self.permission_classes = (permissions.IsAuthenticated,)
-        elif self.action in ("update", "partial_update", "destroy"):
+        elif self.action in ('update', 'partial_update', 'destroy'):
             self.permission_classes = (IsSellerOrAdmin,)
         else:
             self.permission_classes = (permissions.AllowAny,)

@@ -43,34 +43,26 @@ class UserRegisterationAPIView(RegisterView):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
 
-        response_data = ""
-        email = request.data.get("email", None)
-        phone_number = request.data.get("phone_number", None)
+        response_data = ''
+        email = request.data.get('email', None)
+        phone_number = request.data.get('phone_number', None)
 
         if email and phone_number:
-            res = SendOrResendSMSAPIView.as_view()(
-                request._request, *args, **kwargs
-            )
+            res = SendOrResendSMSAPIView.as_view()(request._request, *args, **kwargs)
 
             if res.status_code == 200:
-                response_data = {
-                    "detail": _("verification e-mail and sms sent")
-                }
+                response_data = {'detail': _('verification e-mail and sms sent')}
 
         elif email and not phone_number:
-            respone_data = {"detail": _("verification e-mail sent")}
+            respone_data = {'detail': _('verification e-mail sent')}
 
         else:
-            res = SendOrResendSMSAPIView.as_view()(
-                request._request, *args, **kwargs
-            )
+            res = SendOrResendSMSAPIView.as_view()(request._request, *args, **kwargs)
 
             if res.status_code == 200:
-                response_data = {"detail": _("verification sms sent")}
+                response_data = {'detail': _('verification sms sent')}
 
-        return Response(
-            response_data, status=status.HTTP_201_CREATED, headers=headers
-        )
+        return Response(response_data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class UserLoginAPIView(LoginView):
@@ -94,13 +86,10 @@ class SendOrResendSMSAPIView(GenericAPIView):
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
-
             # Send OTP
-            phone_number = str(serializer.validated_data["phone_number"])
+            phone_number = str(serializer.validated_data['phone_number'])
 
-            user = User.objects.filter(
-                phone__phone_number=phone_number
-            ).first()
+            user = User.objects.filter(phone__phone_number=phone_number).first()
 
             sms_verification = PhoneNumber.objects.filter(
                 user=user, is_verified=False
@@ -124,7 +113,7 @@ class VerifyPhoneNumberAPIView(GenericAPIView):
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
-            message = {"detail": _("Phone number successfully verified.")}
+            message = {'detail': _('Phone number successfully verified.')}
             return Response(message, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -136,7 +125,7 @@ class GoogleLogin(SocialLoginView):
     """
 
     adapter_class = GoogleOAuth2Adapter
-    callback_url = "call_back_url"
+    callback_url = 'call_back_url'
     client_class = OAuth2Client
 
 
@@ -150,7 +139,6 @@ class ProfileAPIView(RetrieveUpdateAPIView):
     permission_classes = (IsUserProfileOwner,)
 
     def get_object(self):
-
         return self.request.user.profile
 
 

@@ -14,23 +14,21 @@ class PaymentSerializer(serializers.ModelSerializer):
     serializer class to CRUD payment for an order.
     """
 
-    buyer = serializers.CharField(
-        source="order.buyer.get_full_name", read_only=True
-    )
+    buyer = serializers.CharField(source='order.buyer.get_full_name', read_only=True)
 
     class Meta:
         model = Payment
         fields = (
-            "id",
-            "buyer",
-            "status",
-            "payment_option",
-            "order",
-            "created_at",
-            "updated_at",
+            'id',
+            'buyer',
+            'status',
+            'payment_option',
+            'order',
+            'created_at',
+            'updated_at',
         )
 
-        read_only_field = ("status",)
+        read_only_field = ('status',)
 
 
 class PaymentOptionSerializer(serializers.ModelSerializer):
@@ -38,25 +36,23 @@ class PaymentOptionSerializer(serializers.ModelSerializer):
     payment serializer for checkout. order will be automatically set during checkout
     """
 
-    buyer = serializers.CharField(
-        source="order.buyer.get_full_name", read_only=True
-    )
+    buyer = serializers.CharField(source='order.buyer.get_full_name', read_only=True)
 
     class Meta:
         model = Payment
         fields = (
-            "id",
-            "buyer",
-            "status",
-            "payment_option",
-            "order",
-            "created_at",
-            "updated_at",
+            'id',
+            'buyer',
+            'status',
+            'payment_option',
+            'order',
+            'created_at',
+            'updated_at',
         )
 
         read_only_fields = (
-            "status",
-            "order",
+            'status',
+            'order',
         )
 
 
@@ -72,10 +68,10 @@ class CheckoutSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = (
-            "id",
-            "payment",
-            "shipping_address",
-            "billing_address",
+            'id',
+            'payment',
+            'shipping_address',
+            'billing_address',
         )
 
     def update(self, instance, validated_data):
@@ -83,7 +79,7 @@ class CheckoutSerializer(serializers.ModelSerializer):
         order_billing_address = None
         order_payment = None
 
-        shipping_address = validated_data["shipping_address"]
+        shipping_address = validated_data['shipping_address']
 
         # shipping address for an order is not set
         if not instance.shipping_address:
@@ -97,7 +93,7 @@ class CheckoutSerializer(serializers.ModelSerializer):
 
             order_shipping_address = address.first()
 
-        billing_address = validated_data["billing_address"]
+        billing_address = validated_data['billing_address']
 
         # billing address for an order is not set
         if not instance.billing_address:
@@ -110,7 +106,7 @@ class CheckoutSerializer(serializers.ModelSerializer):
 
             order_billing_address = address.first()
 
-        payment = validated_data["payment"]
+        payment = validated_data['payment']
 
         # payment option is not set for an order
         if not instance.payment:

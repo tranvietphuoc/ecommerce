@@ -24,4 +24,29 @@ dependencies = [
     "phonenumbers>=8.13.47",
     "django-redis>=5.4.0",
     "dj-rest-auth>=6.0.0",
+    "mypy>=1.13.0",
 ]
+
+# Same as Black.
+line-length = 88
+indent-width = 4
+
+fixable = ["ALL"]
+unfixable = []
+
+[tool.mypy]
+python_executable = "./.venv/bin/python"
+ignore_missing_imports = false
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = ["E", "F"]
+ignore = ["F401"]
+

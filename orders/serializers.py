@@ -16,37 +16,35 @@ class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
         fields = (
-            "id",
-            "order",
-            "product",
-            "quantity",
-            "price",
-            "cost",
-            "created_at",
-            "updated_at",
+            'id',
+            'order',
+            'product',
+            'quantity',
+            'price',
+            'cost',
+            'created_at',
+            'updated_at',
         )
-        read_only_fields = ("order",)
+        read_only_fields = ('order',)
 
     def validate(self, validated_data):
-        order_quantity = validated_data["quantity"]
-        product_quantity = validated_data["product"].quantity
+        order_quantity = validated_data['quantity']
+        product_quantity = validated_data['product'].quantity
 
-        order_id = self.context["view"].kwargs.get("order_id")
-        product = validated_data["product"]
-        current_item = OrderItem.objects.filter(
-            order_id=order_id, product=product
-        )
+        order_id = self.context['view'].kwargs.get('order_id')
+        product = validated_data['product']
+        current_item = OrderItem.objects.filter(order_id=order_id, product=product)
 
         if order_quantity > product_quantity:
-            error = {"quantity": _("ordered quantity is more than the stock.")}
+            error = {'quantity': _('ordered quantity is more than the stock.')}
             raise serializers.ValidationError(error)
 
         if not self.instance and current_item.count() > 0:
-            error = {"product": _("product already exists in your order.")}
+            error = {'product': _('product already exists in your order.')}
             raise serializers.ValidationError(error)
 
-        if self.context["request"].user == product.seller:
-            error = _("adding your own product to your order is not allowed.")
+        if self.context['request'].user == product.seller:
+            error = _('adding your own product to your order is not allowed.')
 
             raise PermissionDenied(error)
         return validated_data
@@ -63,23 +61,23 @@ class OrderReadSerializer(serializers.ModelSerializer):
     serializer class for reading orders
     """
 
-    buyer = serializers.CharField(source="buyer.get_full_name", read_only=True)
+    buyer = serializers.CharField(source='buyer.get_full_name', read_only=True)
     order_items = OrderItemSerializer(read_only=True, many=True)
     total_cost = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Order
         fields = (
-            "id",
-            "buyer",
-            "shipping_address",
-            "billing_address",
-            "payment",
-            "order_items",
-            "total_cost",
-            "status",
-            "created_at",
-            "updated_at",
+            'id',
+            'buyer',
+            'shipping_address',
+            'billing_address',
+            'payment',
+            'order_items',
+            'total_cost',
+            'status',
+            'created_at',
+            'updated_at',
         )
 
     def get_total_cost(self, obj):
@@ -99,17 +97,17 @@ class OrderWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = (
-            "id",
-            "buyer",
-            "status",
-            "order_items",
-            "created_at",
-            "updated_at",
+            'id',
+            'buyer',
+            'status',
+            'order_items',
+            'created_at',
+            'updated_at',
         )
-        read_only_fields = ("status",)
+        read_only_fields = ('status',)
 
     def create(self, validated_data):
-        orders_data = validated_data.pop("order_items")
+        orders_data = validated_data.pop('order_items')
         order = Order.objects.create(**validated_data)
 
         for order_data in orders_data:
@@ -118,14 +116,14 @@ class OrderWriteSerializer(serializers.ModelSerializer):
         return order
 
     def update(self, instance, validated_data):
-        orders_data = validated_data.pop("order_items", None)
+        orders_data = validated_data.pop('order_items', None)
         orders = list((instance.order_items).all())
 
         if orders_data:
             for order_data in orders_data:
                 order = orders.pop(0)
-                order.product = order_data.get("product", order.product)
-                order.quantity = order_data.get("quantity", order.quantity)
+                order.product = order_data.get('product', order.product)
+                order.quantity = order_data.get('quantity', order.quantity)
                 order.save()
 
         return instance

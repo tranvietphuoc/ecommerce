@@ -36,43 +36,37 @@ class UserRegistrationSerializer(RegisterSerializer):
         validators=[
             UniqueValidator(
                 queryset=PhoneNumber.objects.all(),
-                message=_(
-                    "a user is already registrated with this phone number"
-                ),
+                message=_('a user is already registrated with this phone number'),
             )
         ],
     )
     email = serializers.EmailField(required=False)
 
     def validate(self, validated_data):
-        email = validated_data.get("email", None)
-        phone_number = validated_data.get("phone_number", None)
+        email = validated_data.get('email', None)
+        phone_number = validated_data.get('phone_number', None)
 
         if not (email or phone_number):
-            raise serializers.ValidationError(
-                _("enter an email or a phone number")
-            )
+            raise serializers.ValidationError(_('enter an email or a phone number'))
 
-        if validated_data["password1"] != validated_data["password2"]:
-            raise serializers.ValidationError(
-                _("the two password fields didn't match")
-            )
+        if validated_data['password1'] != validated_data['password2']:
+            raise serializers.ValidationError(_("the two password fields didn't match"))
 
         return validated_data
 
     def get_cleaned_data_extra(self):
         return {
-            "phone_number": self.validated_data.get("phone_number", ""),
-            "first_name": self.validated_data.get("first_name", ""),
-            "last_name": self.validated_data.get("last_name", ""),
+            'phone_number': self.validated_data.get('phone_number', ''),
+            'first_name': self.validated_data.get('first_name', ''),
+            'last_name': self.validated_data.get('last_name', ''),
         }
 
     def create_extra(self, user, validated_data):
-        user.first_name = self.validated_data.get("first_name")
-        user.last_name = self.validated_data.get("last_name")
+        user.first_name = self.validated_data.get('first_name')
+        user.last_name = self.validated_data.get('last_name')
         user.save()
 
-        phone_number = validated_data.get("phone_number")
+        phone_number = validated_data.get('phone_number')
 
         if phone_number:
             PhoneNumber.object.create(user=user, phone_number=phone_number)
@@ -89,9 +83,7 @@ class UserLoginSerializer(serializers.Serializer):
 
     phone_number = PhoneNumberField(required=False, allow_blank=True)
     email = serializers.EmailField(required=False, allow_blank=True)
-    password = serializers.CharField(
-        write_only=True, style={"input_type": "password"}
-    )
+    password = serializers.CharField(write_only=True, style={'input_type': 'password'})
 
     def _validate_phone_email(self, phone_number, email, password):
         user = None
@@ -102,15 +94,15 @@ class UserLoginSerializer(serializers.Serializer):
             user = authenticate(username=str(phone_number), password=password)
         else:
             raise serializers.ValidationError(
-                _("enter a phone number or an email and password")
+                _('enter a phone number or an email and password')
             )
 
         return user
 
     def validate(self, validated_data):
-        phone_number = validated_data.get("phone_number")
-        email = validated_data.get("email")
-        password = validated_data.get("password")
+        phone_number = validated_data.get('phone_number')
+        email = validated_data.get('email')
+        password = validated_data.get('password')
 
         user = None
 
@@ -128,15 +120,13 @@ class UserLoginSerializer(serializers.Serializer):
             ).exists()
 
             if not email_address:
-                raise serializers.ValidationError(_("e-mail is not verified."))
+                raise serializers.ValidationError(_('e-mail is not verified.'))
 
         else:
             if not user.phone.is_verified:
-                raise serializers.ValidationError(
-                    _("phone number is not verified.")
-                )
+                raise serializers.ValidationError(_('phone number is not verified.'))
 
-        validated_data["user"] = user
+        validated_data['user'] = user
         return validated_data
 
 
@@ -149,15 +139,13 @@ class PhoneNumberSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PhoneNumber
-        fields = ("phone_number",)
+        fields = ('phone_number',)
 
     def validate_phone_number(self, value):
         try:
             queryset = User.object.get(phone__phone_number=value)
             if queryset.phone.is_verified:
-                raise serializers.ValidationError(
-                    _("phone number is already verified")
-                )
+                raise serializers.ValidationError(_('phone number is already verified'))
         except User.DoesNotExist:
             raise AccountNotRegisteredException()
 
@@ -179,8 +167,8 @@ class VerifyPhoneNumberSerializer(serializers.Serializer):
         return value
 
     def validate(self, validated_data):
-        phone_number = str(validated_data.get("phone_number"))
-        otp = validated_data.get("otp")
+        phone_number = str(validated_data.get('phone_number'))
+        otp = validated_data.get('otp')
 
         queryset = PhoneNumber.objects.get(phone_number=phone_number)
         queryset.check_verification(security_code=otp)
@@ -196,10 +184,10 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = (
-            "avatar",
-            "bio",
-            "created_at",
-            "updated_at",
+            'avatar',
+            'bio',
+            'created_at',
+            'updated_at',
         )
 
 
@@ -210,7 +198,7 @@ class AddressReadOnlySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Address
-        fields = "__all__"
+        fields = '__all__'
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -219,26 +207,24 @@ class UserSerializer(serializers.ModelSerializer):
     """
 
     profile = ProfileSerializer(read_only=True)
-    phone_number = PhoneNumberSerializer(source="phone", read_only=True)
+    phone_number = PhoneNumberSerializer(source='phone', read_only=True)
     addresses = AddressReadOnlySerializer(read_only=True, many=True)
 
     class Meta:
         model = User
         fields = (
-            "id",
-            "email",
-            "phone_number",
-            "first_name",
-            "last_name",
-            "is_active",
-            "profile",
-            "addresses",
+            'id',
+            'email',
+            'phone_number',
+            'first_name',
+            'last_name',
+            'is_active',
+            'profile',
+            'addresses',
         )
 
 
-class ShippingAddressSerializer(
-    CountryFieldMixin, serializers.ModelSerializer
-):
+class ShippingAddressSerializer(CountryFieldMixin, serializers.ModelSerializer):
     """
     serializer class to serialize address of type shipping
     for shipping address, automatically set address type to shipping
@@ -248,12 +234,12 @@ class ShippingAddressSerializer(
 
     class Meta:
         model = Address
-        fields = "__all__"
-        read_only_fields = ("address_type",)
+        fields = '__all__'
+        read_only_fields = ('address_type',)
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        representation["address_type"] = "S"
+        representation['address_type'] = 'S'
         return representation
 
 
@@ -267,10 +253,10 @@ class BillingAddressSerializer(CountryFieldMixin, serializers.ModelSerializer):
 
     class Meta:
         model = Address
-        fields = "__all__"
-        read_only_fields = ("address_type",)
+        fields = '__all__'
+        read_only_fields = ('address_type',)
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        representation["address_type"] = "B"
+        representation['address_type'] = 'B'
         return representation
