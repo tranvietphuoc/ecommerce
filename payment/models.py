@@ -15,8 +15,13 @@ class Payment(models.Model):
         (FAILED, _('failed')),
     )
 
+    ZALOPAY = 'Z'
+    MOMO = 'M'
+
+    PAYMENT_METHODS = ((ZALOPAY, _('zalopay')), (MOMO, _('momo')))
+
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=PENDING)
-    payment_option = models.CharField(max_length=1, choices=None)
+    payment_option = models.CharField(max_length=1, choices=PAYMENT_METHODS)
     order = models.OneToOneField(
         Order, related_name='payment', on_delete=models.CASCADE
     )
