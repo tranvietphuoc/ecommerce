@@ -70,7 +70,7 @@ class UserRegistrationSerializer(RegisterSerializer):
         phone_number = validated_data.get('phone_number')
 
         if phone_number:
-            PhoneNumber.object.create(user=user, phone_number=phone_number)
+            PhoneNumber.objects.create(user=user, phone_number=phone_number)
             user.phone.save()
 
     def custom_signup(self, request, user):
@@ -144,7 +144,7 @@ class PhoneNumberSerializer(serializers.ModelSerializer):
 
     def validate_phone_number(self, value):
         try:
-            queryset = User.object.get(phone__phone_number=value)
+            queryset = User.objects.get(phone__phone_number=value)
             if queryset.phone.is_verified:
                 raise serializers.ValidationError(_('phone number is already verified'))
         except User.DoesNotExist:
@@ -162,7 +162,7 @@ class VerifyPhoneNumberSerializer(serializers.Serializer):
     otp = serializers.CharField(max_length=settings.TOKEN_LENGTH)
 
     def validate_phone_number(self, value):
-        queryset = User.object.filter(phone__phone_number=value)
+        queryset = User.objects.filter(phone__phone_number=value)
         if not queryset.exists():
             raise AccountNotRegisteredException()
         return value
