@@ -24,7 +24,7 @@ User = get_user_model()
 
 class UserRegistrationSerializer(RegisterSerializer):
     """
-    serializer for registrating new users using email or phone number
+    serializer for registering new users using email or phone number
     """
 
     username = None
@@ -36,10 +36,11 @@ class UserRegistrationSerializer(RegisterSerializer):
         validators=[
             UniqueValidator(
                 queryset=PhoneNumber.objects.all(),
-                message=_('a user is already registrated with this phone number'),
+                message=_('a user is already registered with this phone number'),
             )
         ],
     )
+
     email = serializers.EmailField(required=False)
 
     def validate(self, validated_data):
