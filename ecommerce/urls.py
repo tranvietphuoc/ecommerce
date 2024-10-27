@@ -52,12 +52,12 @@ urlpatterns = [
     re_path(
         r'^account-confirm-email/(?P<key>[-:\w]+)/$',
         VerifyEmailView.as_view(),
-        name='account-confirm-email',
+        name='account_confirm_email',
     ),
     path(
         'account-email-verification-sent/',
         TemplateView.as_view(),
-        name='account-email-verification-sent',
+        name='account_email_verification_sent',
     ),
     path('users/login/google/', GoogleLogin.as_view(), name='google_login'),
     path(
