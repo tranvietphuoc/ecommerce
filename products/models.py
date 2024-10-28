@@ -55,3 +55,22 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Comment(models.Model):
+    product = models.ForeignKey(
+        Product, related_name='comments', on_delete=models.CASCADE
+    )
+    user = models.ForeignKey(
+        User, related_name='products_comments', null=True, on_delete=models.SET_NULL
+    )
+
+    body = models.TextField(_('Comment body'))
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ('-created_at',)
+
+    def __str__(self):
+        return f'{self.body[:20]} by {self.user.username}'

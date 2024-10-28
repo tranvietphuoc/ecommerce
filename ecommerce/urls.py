@@ -34,7 +34,7 @@ from dj_rest_auth.views import (
 )
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
-from users.views import GoogleLogin
+# from users.views import GoogleLogin
 
 
 urlpatterns = [
@@ -59,7 +59,7 @@ urlpatterns = [
         TemplateView.as_view(),
         name='account_email_verification_sent',
     ),
-    path('users/login/google/', GoogleLogin.as_view(), name='google_login'),
+    # path('users/login/google/', GoogleLogin.as_view(), name='google_login'),
     path(
         'password/reset/',
         PasswordResetView.as_view(),

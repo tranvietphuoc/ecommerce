@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from products.models import Product, ProductCategory
+from products.models import Comment, Product, ProductCategory
 
 
 class ProductCategoryReadSerializer(serializers.ModelSerializer):
@@ -60,3 +60,19 @@ class ProductWriteSerializer(serializers.ModelSerializer):
             nested_serializer.update(nested_instance, nested_data)
 
         return super(ProductWriteSerializer, self).update(instance, validated_data)
+
+
+class CommentReadSerializer(serializers.ModelSerializer):
+    user = serializers.CharField(source='user.get_full_name', read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = '__all__'
+
+
+class CommentWriteSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Comment
+        fields = '__all__'
