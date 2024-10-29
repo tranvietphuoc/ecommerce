@@ -3,7 +3,7 @@ from typing_extensions import Required
 from dj_rest_auth.registration.serializers import RegisterSerializer
 from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django_countries.serializers import CountryFieldMixin
 from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework import serializers

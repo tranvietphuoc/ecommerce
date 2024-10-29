@@ -3,7 +3,7 @@ from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import RegisterView, SocialLoginView
 from dj_rest_auth.views import LoginView
 from django.contrib.auth import get_user_model
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from rest_framework import permissions, status
 from rest_framework.generics import (
     GenericAPIView,
