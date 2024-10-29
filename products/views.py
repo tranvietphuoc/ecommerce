@@ -29,7 +29,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 
     queryset = Product.objects.all()
 
-    def get_serializer(self, *args, **kwargs):
+    def get_serializer_class(self, *args, **kwargs):
         if self.action in ('create', 'update', 'parital_update', 'destroy'):
             return ProductWriteSerializer
 
@@ -58,7 +58,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         product_id = self.kwargs.get('product_id')
         return res.filter(product__id=product_id)
 
-    def get_serializer(self, *args, **kwargs):
+    def get_serializer_class(self, *args, **kwargs):
         if self.action in ('create', 'update', 'partial_update', 'destroy'):
             return CommentWriteSerializer
         return CommentReadSerializer
