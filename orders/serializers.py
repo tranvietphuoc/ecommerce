@@ -33,7 +33,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
         order_id = self.context['view'].kwargs.get('order_id')
         product = validated_data['product']
-        current_item = OrderItem.objects.filter(order_id=order_id, product=product)
+        current_item = OrderItem.objects.filter(order__id=order_id, product=product)
 
         if order_quantity > product_quantity:
             error = {'quantity': _('ordered quantity is more than the stock.')}
