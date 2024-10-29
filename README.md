@@ -6,7 +6,9 @@ Implement ecommerce api, just backend apis
 
 - Run `chmod +x entrypoint.sh` to make `entrypoint.sh` can be executable.
 - `docker compose up -d` to run containers and go to `127.0.0.1:8000` to test all apis.
-- `docker compose exec web python manage.py createsuperuser` to create `admin`
+- `docker compose exec web python manage.py makemigrations` to make a migration for all changes.
+- `docker compose exec web python manage.py migrate` to apply all migrations to database.
+- `docker compose exec web python manage.py createsuperuser` to create `admin`.
 - `docker compose exec db psql --username={dbusername} --dbname={databasename}` to interact with database.
 
 ## Tasks to complete
