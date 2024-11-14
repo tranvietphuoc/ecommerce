@@ -118,9 +118,8 @@ class UserLoginSerializer(serializers.Serializer):
             email_address = user.emailaddress_set.filter(
                 email=user.email, verified=True
             ).exists()
-
             if not email_address:
-                raise serializers.ValidationError(_('e-mail is not verified.'))
+                raise serializers.ValidationError(_('email is not verified.'))
 
         else:
             if not user.phone.is_verified:
