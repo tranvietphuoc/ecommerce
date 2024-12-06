@@ -54,7 +54,7 @@ cryptography==43.0.3
     # via ecommerce (pyproject.toml)
 dj-rest-auth==6.0.0
     # via ecommerce (pyproject.toml)
-django==5.1.2
+django==5.1.4
     # via
     #   ecommerce (pyproject.toml)
     #   dj-rest-auth
